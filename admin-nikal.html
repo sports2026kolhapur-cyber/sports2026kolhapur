@@ -157,17 +157,35 @@ async function loadPrograms(){
 
   if(!mainEl.value || !typeEl.value) return;
 
-  const res = await fetch(
-    `${API}?action=adminPrograms&main=${encodeURIComponent(mainEl.value)}&type=${encodeURIComponent(typeEl.value)}`
-  );
-  const list = await res.json();
+  try{
+    const res = await fetch(
+      `${API}?action=adminPrograms` +
+      `&main=${encodeURIComponent(mainEl.value.trim())}` +
+      `&type=${encodeURIComponent(typeEl.value.trim())}` +
+      `&t=${Date.now()}`
+    );
 
-  list.forEach(p=>{
-    const opt=document.createElement("option");
-    opt.value=p;
-    opt.textContent=p;
-    programEl.appendChild(opt);
-  });
+    const list = await res.json();
+
+    if(list.length === 0){
+      const opt = document.createElement("option");
+      opt.textContent = "⛔ कार्यक्रम उपलब्ध नाहीत";
+      opt.value = "";
+      programEl.appendChild(opt);
+      return;
+    }
+
+    list.forEach(p=>{
+      const opt = document.createElement("option");
+      opt.value = p;
+      opt.textContent = p;
+      programEl.appendChild(opt);
+    });
+
+  }catch(err){
+    console.error("Program load error:", err);
+    alert("❌ कार्यक्रम load करताना अडचण आली");
+  }
 }
 
 /* 💾 save / update */
