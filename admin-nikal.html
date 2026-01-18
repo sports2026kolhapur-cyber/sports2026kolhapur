@@ -106,7 +106,32 @@ th{background:#e5e7eb;}
 <label>मंडळ कार्यालय</label>
 <select id="office">
   <option value="">— निवडा —</option>
+
+  <option value="यांत्रिकी मंडळ, कोल्हापूर">
+    यांत्रिकी मंडळ, कोल्हापूर
+  </option>
+
+  <option value="यांत्रिकी मंडळ, पुणे">
+    यांत्रिकी मंडळ, पुणे
+  </option>
+
+  <option value="यांत्रिकी मंडळ, नाशिक">
+    यांत्रिकी मंडळ, नाशिक
+  </option>
+
+  <option value="यांत्रिकी मंडळ, नांदेड">
+    यांत्रिकी मंडळ, नांदेड
+  </option>
+
+  <option value="यांत्रिकी मंडळ, नागपूर">
+    यांत्रिकी मंडळ, नागपूर
+  </option>
+
+  <option value="पाटबंधारे संशोधन व विकास संचालनालय, पुणे">
+    पाटबंधारे संशोधन व विकास संचालनालय, पुणे
+  </option>
 </select>
+
 
 <button onclick="save()">निकाल Save / Update करा</button>
 
@@ -192,29 +217,6 @@ async function loadPrograms(){
   }catch(err){
     console.error("Program load error:", err);
     alert("❌ कार्यक्रम load करताना अडचण आली");
-  }
-}
-async function loadOffices(){
-  // dropdown reset
-  officeEl.innerHTML = `<option value="">— निवडा —</option>`;
-
-  try{
-    const res = await fetch(
-      `${API}?action=officeList&t=${Date.now()}`
-    );
-
-    const list = await res.json();
-
-    list.forEach(o=>{
-      const opt = document.createElement("option");
-      opt.value = o;
-      opt.textContent = o;
-      officeEl.appendChild(opt);
-    });
-
-  }catch(err){
-    console.error("Office load error", err);
-    alert("❌ मंडळ कार्यालय load होत नाही");
   }
 }
 /* 💾 save / update */
@@ -311,7 +313,6 @@ function logout(){
 /* init */
 window.addEventListener("DOMContentLoaded", () => {
   loadResults();
-  loadOffices();
 });
 </script>
 </body>
