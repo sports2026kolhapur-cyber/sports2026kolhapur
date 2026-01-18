@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login – निकाल व्यवस्थापन</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f1f5f9;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+}
+.card{
+  background:#fff;
+  padding:30px;
+  border-radius:14px;
+  width:100%;
+  max-width:360px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  text-align:center;
+}
+h1{
+  margin-top:0;
+  color:#1e40af;
+}
+input{
+  width:100%;
+  padding:14px;
+  margin-top:20px;
+  font-size:16px;
+  border-radius:10px;
+  border:1.8px solid #cbd5e1;
+}
+button{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:#1e40af;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+.error{
+  margin-top:16px;
+  color:#b91c1c;
+  font-weight:700;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h1>🔐 Admin Login</h1>
+  <p>निकाल भरण्यासाठी Admin Code टाका</p>
+
+  <input type="password" id="adminCode" placeholder="Admin Code">
+
+  <button onclick="login()">Login</button>
+
+  <div id="error" class="error">❌ चुकीचा Admin Code</div>
+</div>
+
+<script>
+const API = "YOUR_WEB_APP_URL_HERE"; // Apps Script Web App URL
+
+async function login(){
+  const code = document.getElementById("adminCode").value.trim();
+  if(!code) return;
+
+  const res = await fetch(
+    `${API}?action=adminLogin&code=${encodeURIComponent(code)}`
+  );
+  const data = await res.json();
+
+  if(data.ok){
+    sessionStorage.setItem("adminLogged","1");
+    window.location.href = "admin-nikal.html";
+  }else{
+    document.getElementById("error").style.display="block";
+  }
+}
+</script>
+</body>
+</html>
