@@ -93,13 +93,20 @@ th{background:#e5e7eb;}
 </select>
 
 <label>क्रमांक</label>
-<input id="position" placeholder="उदा. प्रथम / द्वितीय / तृतीय">
+<select id="position">
+  <option value="">— निवडा —</option>
+  <option value="प्रथम">प्रथम</option>
+  <option value="द्वितीय">द्वितीय</option>
+  <option value="तृतीय">तृतीय</option>
+</select>
 
 <label>विजेता नाव ( / वापरू शकता )</label>
 <input id="name" placeholder="नाव1 / नाव2 / नाव3">
 
 <label>मंडळ कार्यालय</label>
-<input id="office" placeholder="यांत्रिकी मंडळ, कोल्हापूर">
+<select id="office">
+  <option value="">— निवडा —</option>
+</select>
 
 <button onclick="save()">निकाल Save / Update करा</button>
 
@@ -187,7 +194,29 @@ async function loadPrograms(){
     alert("❌ कार्यक्रम load करताना अडचण आली");
   }
 }
+async function loadOffices(){
+  // dropdown reset
+  officeEl.innerHTML = `<option value="">— निवडा —</option>`;
 
+  try{
+    const res = await fetch(
+      `${API}?action=officeList&t=${Date.now()}`
+    );
+
+    const list = await res.json();
+
+    list.forEach(o=>{
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o;
+      officeEl.appendChild(opt);
+    });
+
+  }catch(err){
+    console.error("Office load error", err);
+    alert("❌ मंडळ कार्यालय load होत नाही");
+  }
+}
 /* 💾 save / update */
 async function save(){
   successEl.style.display="none";
@@ -281,6 +310,7 @@ function logout(){
 
 /* init */
 loadResults();
+  loadOffices();
 </script>
 
 </body>
