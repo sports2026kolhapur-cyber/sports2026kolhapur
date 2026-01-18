@@ -309,9 +309,10 @@ function logout(){
 }
 
 /* init */
-loadResults();
+window.addEventListener("DOMContentLoaded", () => {
+  loadResults();
   loadOffices();
+});
 </script>
-
 </body>
 </html>
