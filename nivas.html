@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>निवास व्यवस्था</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  background:#f1f5f9;
+  font-family:"Noto Sans Devanagari","Mukta",sans-serif;
+  padding:16px;
+}
+.card{
+  max-width:420px;
+  margin:auto;
+  background:#fff;
+  padding:24px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+h1{text-align:center;color:#1e40af;}
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:14px;
+  border-radius:10px;
+  font-size:16px;
+}
+button{
+  background:#1e40af;
+  color:#fff;
+  border:none;
+  font-weight:700;
+}
+.info{
+  margin-top:20px;
+  display:none;
+}
+a.map{
+  display:block;
+  margin-top:10px;
+  color:#1d4ed8;
+  font-weight:700;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>🏨 निवास व्यवस्था</h1>
+
+<input id="mobile" placeholder="नोंदणी केलेला मोबाईल नंबर">
+<button onclick="check()">माहिती पाहा</button>
+
+<div id="info" class="info">
+  <p><b>नाव:</b> <span id="name"></span></p>
+  <p><b>कार्यालय:</b> <span id="office"></span></p>
+  <p><b>निवास:</b> <span id="stay"></span></p>
+  <p><b>खोली:</b> <span id="room"></span></p>
+  <a id="map" class="map" target="_blank">📍 Google Map उघडा</a>
+</div>
+</div>
+
+<script>
+const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+
+async function check(){
+  const mob=document.getElementById("mobile").value.trim();
+  if(!mob) return;
+
+  const res=await fetch(`${API}?action=nivas&mobile=${mob}`);
+  const d=await res.json();
+
+  if(!d.ok){
+    alert("❌ माहिती उपलब्ध नाही");
+    return;
+  }
+
+  info.style.display="block";
+  name.textContent=d.name;
+  office.textContent=d.office;
+  stay.textContent=d.stay;
+  room.textContent=d.room;
+  map.href=d.map;
+}
+</script>
+
+</body>
+</html>
