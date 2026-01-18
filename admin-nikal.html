@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel – निकाल भरणे</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --primary:#1e40af;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+}
+body{
+  margin:0;
+  padding:16px;
+  background:var(--bg);
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+}
+.container{
+  max-width:600px;
+  margin:auto;
+}
+.card{
+  background:var(--card);
+  padding:24px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.12);
+}
+h1{
+  margin-top:0;
+  text-align:center;
+  color:var(--primary);
+}
+label{
+  font-weight:700;
+  margin-top:16px;
+  display:block;
+}
+select,input{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1.8px solid #cbd5e1;
+  font-size:15px;
+}
+button{
+  width:100%;
+  margin-top:24px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:var(--primary);
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+.success{
+  margin-top:16px;
+  color:#065f46;
+  font-weight:800;
+  display:none;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="card">
+    <h1>🏆 निकाल भरणे (Admin)</h1>
+
+    <label>कार्यक्रम प्रकार</label>
+    <select id="main">
+      <option value="">— निवडा —</option>
+      <option value="क्रीडा">क्रीडा</option>
+      <option value="सांस्कृतिक">सांस्कृतिक</option>
+    </select>
+
+    <label>सहभाग प्रकार</label>
+    <select id="type">
+      <option value="">— निवडा —</option>
+      <option value="वैयक्तिक">वैयक्तिक</option>
+      <option value="दुहेरी">दुहेरी</option>
+      <option value="सांघिक">सांघिक</option>
+    </select>
+
+    <label>खेळ / कार्यक्रम</label>
+    <input id="program" placeholder="उदा. ५००० मी धावणे">
+
+    <label>क्रमांक</label>
+    <input id="position" placeholder="उदा. प्रथम / द्वितीय">
+
+    <label>विजेता नाव ( / वापरू शकता )</label>
+    <input id="name" placeholder="नाव1 / नाव2 / नाव3">
+
+    <label>मंडळ कार्यालय</label>
+    <input id="office" placeholder="यांत्रिकी मंडळ, कोल्हापूर">
+
+    <button onclick="save()">निकाल Save करा</button>
+
+    <div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
+  </div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+
+// 🔐 login guard
+if(sessionStorage.getItem("adminLogged")!=="1"){
+  window.location.href="admin-login.html";
+}
+
+async function save(){
+  const params = new URLSearchParams({
+    action:"saveResult",
+    main:document.getElementById("main").value,
+    type:document.getElementById("type").value,
+    program:document.getElementById("program").value,
+    position:document.getElementById("position").value,
+    name:document.getElementById("name").value,
+    office:document.getElementById("office").value
+  });
+
+  const res = await fetch(`${API}?${params.toString()}`);
+  const data = await res.json();
+
+  if(data.ok){
+    document.getElementById("success").style.display="block";
+  }
+}
+</script>
+</body>
+</html>
