@@ -101,8 +101,10 @@ button{
 
     <button onclick="save()">निकाल Save करा</button>
 
-    <div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
-  </div>
+<div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
+
+<button onclick="logout()">Logout</button>
+</div>
 </div>
 
 <script>
@@ -114,14 +116,34 @@ if(sessionStorage.getItem("adminLogged")!=="1"){
 }
 
 async function save(){
+  document.getElementById("success").style.display="none";
+  const main     = document.getElementById("main");
+  const type     = document.getElementById("type");
+  const program  = document.getElementById("program");
+  const position = document.getElementById("position");
+  const name     = document.getElementById("name");
+  const office   = document.getElementById("office");
+
+  // ✅ validation
+  if(
+    !main.value ||
+    !type.value ||
+    !program.value ||
+    !position.value ||
+    !name.value
+  ){
+    alert("❌ सर्व आवश्यक माहिती भरा");
+    return;
+  }
+
   const params = new URLSearchParams({
     action:"saveResult",
-    main:document.getElementById("main").value,
-    type:document.getElementById("type").value,
-    program:document.getElementById("program").value,
-    position:document.getElementById("position").value,
-    name:document.getElementById("name").value,
-    office:document.getElementById("office").value
+    main: main.value,
+    type: type.value,
+    program: program.value,
+    position: position.value,
+    name: name.value,
+    office: office.value
   });
 
   const res = await fetch(`${API}?${params.toString()}`);
@@ -129,8 +151,19 @@ async function save(){
 
   if(data.ok){
     document.getElementById("success").style.display="block";
+
+    // ✅ clear form
+    main.value="";
+    type.value="";
+    program.value="";
+    position.value="";
+    name.value="";
+    office.value="";
   }
 }
+
+function logout(){
+  sessionStorage.removeItem("adminLogged");
+  location.href="dashboard.html";
+}
 </script>
-</body>
-</html>
