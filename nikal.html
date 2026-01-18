@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>स्पर्धांचे निकाल – २०२६</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --primary:#1e40af;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#1f2937;
+  --success:#16a34a;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  padding:16px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+}
+
+.container{max-width:900px;margin:auto;}
+
+.header{
+  background:var(--primary);
+  color:#fff;
+  padding:22px;
+  border-radius:14px;
+  text-align:center;
+}
+
+.header h1{margin:0;font-size:24px;font-weight:800;}
+.header p{margin-top:6px;font-size:16px;font-weight:600;}
+
+.card{
+  background:var(--card);
+  margin-top:22px;
+  padding:22px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.12);
+}
+
+h2{
+  margin-top:0;
+  color:var(--primary);
+  font-size:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px;
+  margin-top:14px;
+}
+
+button{
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#334155;
+}
+
+.hidden{display:none;}
+
+.result-card{
+  background:#ecfdf5;
+  border-left:6px solid var(--success);
+  padding:16px;
+  border-radius:10px;
+  margin-bottom:14px;
+}
+
+.rank{
+  font-size:20px;
+  font-weight:800;
+}
+
+.office{
+  margin-top:6px;
+  font-weight:600;
+  color:#065f46;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- ================= HEADER ================= -->
+<div class="header">
+  <h1>🏆 स्पर्धांचे निकाल – २०२६</h1>
+  <p>यांत्रिकी मंडळ वार्षिक क्रीडा व सांस्कृतिक कार्यक्रम</p>
+</div>
+
+<!-- ================= STEP 1 ================= -->
+<div class="card" id="step1">
+  <h2>कार्यक्रम प्रकार निवडा</h2>
+  <div class="grid">
+    <button onclick="selectMain('sports')">क्रीडा</button>
+    <button onclick="selectMain('cultural')">सांस्कृतिक</button>
+  </div>
+</div>
+
+<!-- ================= STEP 2 ================= -->
+<div class="card hidden" id="step2">
+  <h2>सहभाग प्रकार निवडा</h2>
+  <div class="grid">
+    <button onclick="selectType('individual')">वैयक्तिक</button>
+    <button onclick="selectType('duheri')">दुहेरी</button>
+    <button onclick="selectType('team')">सांघिक</button>
+  </div>
+</div>
+
+<!-- ================= STEP 3 ================= -->
+<div class="card hidden" id="step3">
+  <h2>खेळ / कार्यक्रम निवडा</h2>
+  <div id="programList" class="grid"></div>
+</div>
+
+<!-- ================= STEP 4 ================= -->
+<div class="card hidden" id="step4">
+  <h2>निकाल</h2>
+  <div id="resultBox"></div>
+</div>
+
+</div>
+
+<script>
+// ================= CONFIG =================
+const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+
+// ================= STATE =================
+let mainType = "";
+let partType = "";
+
+// ================= STEP 1 =================
+function selectMain(m){
+  mainType = m;
+  document.getElementById("step2").classList.remove("hidden");
+  document.getElementById("step3").classList.add("hidden");
+  document.getElementById("step4").classList.add("hidden");
+}
+
+// ================= STEP 2 =================
+function selectType(t){
+  partType = t;
+  loadPrograms();
+}
+
+// ================= STEP 3 =================
+async function loadPrograms(){
+  document.getElementById("step3").classList.remove("hidden");
+  document.getElementById("step4").classList.add("hidden");
+
+  const res = await fetch(
+    `${API}?action=programs&main=${mainType}&type=${partType}`
+  );
+  const list = await res.json();
+
+  const box = document.getElementById("programList");
+  box.innerHTML = "";
+
+  if(!list.length){
+    box.innerHTML = "<p>❌ कार्यक्रम उपलब्ध नाहीत.</p>";
+    return;
+  }
+
+  list.forEach(p=>{
+    const btn = document.createElement("button");
+    btn.className = "secondary";
+    btn.textContent = p;
+    btn.onclick = ()=>loadResult(p);
+    box.appendChild(btn);
+  });
+}
+
+// ================= STEP 4 =================
+async function loadResult(program){
+  document.getElementById("step4").classList.remove("hidden");
+
+  const res = await fetch(
+    `${API}?action=result&main=${mainType}&type=${partType}&program=${encodeURIComponent(program)}`
+  );
+  const data = await res.json();
+
+  const box = document.getElementById("resultBox");
+  box.innerHTML = "";
+
+  if(!data.length){
+    box.innerHTML = "<p>❌ निकाल उपलब्ध नाही.</p>";
+    return;
+  }
+
+  data.forEach(r=>{
+    const names = (r.name || "")
+      .split("/")
+      .map(n=>n.trim())
+      .join("<br>");
+
+    box.innerHTML += `
+      <div class="result-card">
+        <div class="rank">🏅 ${r.position}</div>
+        <div>${names}</div>
+        <div class="office">${r.office}</div>
+      </div>
+    `;
+  });
+}
+</script>
+</body>
+</html>
