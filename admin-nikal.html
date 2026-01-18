@@ -17,26 +17,15 @@ body{
   background:var(--bg);
   font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
 }
-.container{
-  max-width:600px;
-  margin:auto;
-}
+.container{max-width:700px;margin:auto;}
 .card{
   background:var(--card);
   padding:24px;
   border-radius:14px;
   box-shadow:0 8px 20px rgba(0,0,0,0.12);
 }
-h1{
-  margin-top:0;
-  text-align:center;
-  color:var(--primary);
-}
-label{
-  font-weight:700;
-  margin-top:16px;
-  display:block;
-}
+h1,h2{text-align:center;color:var(--primary);}
+label{font-weight:700;margin-top:16px;display:block;}
 select,input{
   width:100%;
   padding:12px;
@@ -47,7 +36,7 @@ select,input{
 }
 button{
   width:100%;
-  margin-top:24px;
+  margin-top:20px;
   padding:14px;
   border:none;
   border-radius:12px;
@@ -57,154 +46,200 @@ button{
   font-weight:800;
   cursor:pointer;
 }
+.logout{background:#7c2d12;}
 .success{
-  margin-top:16px;
+  margin-top:14px;
   color:#065f46;
   font-weight:800;
   display:none;
   text-align:center;
 }
-.logout{
-  background:#7c2d12;
-}
+
+/* table */
+table{width:100%;border-collapse:collapse;margin-top:16px;}
+th,td{border:1px solid #cbd5e1;padding:8px;text-align:center;}
+th{background:#e5e7eb;}
+.action-btn{padding:6px 10px;margin:2px;font-size:14px;}
+.edit{background:#0ea5e9;}
+.delete{background:#dc2626;}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-  <div class="card">
-    <h1>🏆 निकाल भरणे (Admin)</h1>
+<div class="card">
+<h1>🏆 निकाल भरणे (Admin)</h1>
 
-    <!-- कार्यक्रम प्रकार -->
-    <label>कार्यक्रम प्रकार</label>
-    <select id="main">
-      <option value="">— निवडा —</option>
-      <option value="क्रीडा">क्रीडा</option>
-      <option value="सांस्कृतिक">सांस्कृतिक</option>
-    </select>
+<label>कार्यक्रम प्रकार</label>
+<select id="main">
+  <option value="">— निवडा —</option>
+  <option value="क्रीडा">क्रीडा</option>
+  <option value="सांस्कृतिक">सांस्कृतिक</option>
+</select>
 
-    <!-- सहभाग प्रकार -->
-    <label>सहभाग प्रकार</label>
-    <select id="type">
-      <option value="">— निवडा —</option>
-      <option value="वैयक्तिक">वैयक्तिक</option>
-      <option value="दुहेरी">दुहेरी</option>
-      <option value="सांघिक">सांघिक</option>
-    </select>
+<label>सहभाग प्रकार</label>
+<select id="type">
+  <option value="">— निवडा —</option>
+  <option value="वैयक्तिक">वैयक्तिक</option>
+  <option value="दुहेरी">दुहेरी</option>
+  <option value="सांघिक">सांघिक</option>
+</select>
 
-    <!-- खेळ / कार्यक्रम -->
-    <label>खेळ / कार्यक्रम</label>
-    <select id="program">
-      <option value="">— निवडा —</option>
-    </select>
+<label>खेळ / कार्यक्रम</label>
+<select id="program">
+  <option value="">— निवडा —</option>
+</select>
 
-    <!-- क्रमांक -->
-    <label>क्रमांक</label>
-    <input id="position" placeholder="उदा. प्रथम / द्वितीय">
+<label>क्रमांक</label>
+<input id="position" placeholder="उदा. प्रथम / द्वितीय">
 
-    <!-- विजेता -->
-    <label>विजेता नाव ( / वापरू शकता )</label>
-    <input id="name" placeholder="नाव1 / नाव2 / नाव3">
+<label>विजेता नाव ( / वापरू शकता )</label>
+<input id="name" placeholder="नाव1 / नाव2">
 
-    <!-- कार्यालय -->
-    <label>मंडळ कार्यालय</label>
-    <input id="office" placeholder="यांत्रिकी मंडळ, कोल्हापूर">
+<label>मंडळ कार्यालय</label>
+<input id="office" placeholder="यांत्रिकी मंडळ, कोल्हापूर">
 
-    <button onclick="save()">निकाल Save करा</button>
+<button onclick="save()">निकाल Save / Update करा</button>
+<div id="success" class="success">✅ निकाल सेव्ह झाला</div>
 
-    <div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
+<button class="logout" onclick="logout()">Logout</button>
 
-    <button class="logout" onclick="logout()">Logout</button>
-  </div>
+<hr style="margin:30px 0">
+
+<h2>📋 सध्याचे निकाल</h2>
+
+<table>
+<thead>
+<tr>
+<th>कार्यक्रम</th>
+<th>सहभाग</th>
+<th>खेळ</th>
+<th>क्रमांक</th>
+<th>विजेता</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="resultBody"></tbody>
+</table>
+
+</div>
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+let editRow=null;
 
-/* 🔐 LOGIN GUARD */
-if(sessionStorage.getItem("adminLogged") !== "1"){
-  location.href = "admin-login.html";
+/* 🔐 login guard */
+if(sessionStorage.getItem("adminLogged")!=="1"){
+  location.href="admin-login.html";
 }
 
-/* 🔁 LOAD PROGRAMS FROM माहिती SHEET */
-document.getElementById("main").addEventListener("change", loadPrograms);
-document.getElementById("type").addEventListener("change", loadPrograms);
+/* 🔁 program list */
+document.getElementById("main").addEventListener("change",loadPrograms);
+document.getElementById("type").addEventListener("change",loadPrograms);
 
 async function loadPrograms(){
-  const main = document.getElementById("main").value;
-  const type = document.getElementById("type").value;
-  const program = document.getElementById("program");
+  const main=mainEl.value,type=typeEl.value;
+  programEl.innerHTML=`<option value="">— निवडा —</option>`;
+  if(!main||!type) return;
 
-  program.innerHTML = `<option value="">— निवडा —</option>`;
-
-  if(!main || !type) return;
-
-  const res = await fetch(
-    `${API}?action=adminPrograms&main=${encodeURIComponent(main)}&type=${encodeURIComponent(type)}`
-  );
-  const list = await res.json();
-
+  const res=await fetch(`${API}?action=adminPrograms&main=${main}&type=${type}`);
+  const list=await res.json();
   list.forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    program.appendChild(opt);
+    const o=document.createElement("option");
+    o.value=o.textContent=p;
+    programEl.appendChild(o);
   });
 }
 
-/* 💾 SAVE RESULT */
+/* 💾 save / update */
 async function save(){
-  document.getElementById("success").style.display = "none";
-
-  const main     = document.getElementById("main");
-  const type     = document.getElementById("type");
-  const program  = document.getElementById("program");
-  const position = document.getElementById("position");
-  const name     = document.getElementById("name");
-  const office   = document.getElementById("office");
-
-  if(
-    !main.value ||
-    !type.value ||
-    !program.value ||
-    !position.value ||
-    !name.value
-  ){
-    alert("❌ सर्व आवश्यक माहिती भरा");
+  success.style.display="none";
+  if(!mainEl.value||!typeEl.value||!programEl.value||!positionEl.value||!nameEl.value){
+    alert("❌ सर्व माहिती भरा");
     return;
   }
 
-  const params = new URLSearchParams({
+  if(editRow){
+    await fetch(`${API}?action=deleteResult&row=${editRow}`);
+    editRow=null;
+  }
+
+  const params=new URLSearchParams({
     action:"saveResult",
-    main: main.value,
-    type: type.value,
-    program: program.value,
-    position: position.value,
-    name: name.value,
-    office: office.value
+    main:mainEl.value,
+    type:typeEl.value,
+    program:programEl.value,
+    position:positionEl.value,
+    name:nameEl.value,
+    office:officeEl.value
   });
 
-  const res = await fetch(`${API}?${params.toString()}`);
-  const data = await res.json();
-
-  if(data.ok){
-    document.getElementById("success").style.display = "block";
-
-    main.value="";
-    type.value="";
-    program.innerHTML = `<option value="">— निवडा —</option>`;
-    position.value="";
-    name.value="";
-    office.value="";
-  }
+  await fetch(`${API}?${params}`);
+  success.style.display="block";
+  clearForm();
+  loadResults();
 }
 
-/* 🚪 LOGOUT */
+/* 📋 load results */
+async function loadResults(){
+  const res=await fetch(`${API}?action=adminResultList`);
+  const list=await res.json();
+  resultBody.innerHTML="";
+  list.forEach(r=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${r.main}</td>
+      <td>${r.type}</td>
+      <td>${r.program}</td>
+      <td>${r.position}</td>
+      <td>${r.name}</td>
+      <td>
+        <button class="action-btn edit" onclick='editResult(${JSON.stringify(r)})'>✏️</button>
+        <button class="action-btn delete" onclick='deleteResult(${r.row})'>🗑️</button>
+      </td>`;
+    resultBody.appendChild(tr);
+  });
+}
+
+/* ✏️ edit */
+function editResult(r){
+  editRow=r.row;
+  mainEl.value=r.main;
+  typeEl.value=r.type;
+  programEl.innerHTML=`<option>${r.program}</option>`;
+  positionEl.value=r.position;
+  nameEl.value=r.name;
+  officeEl.value=r.office;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* 🗑️ delete */
+async function deleteResult(row){
+  if(!confirm("Delete करायचा?")) return;
+  await fetch(`${API}?action=deleteResult&row=${row}`);
+  loadResults();
+}
+
+/* utils */
+function clearForm(){
+  mainEl.value=typeEl.value=positionEl.value=nameEl.value=officeEl.value="";
+  programEl.innerHTML=`<option value="">— निवडा —</option>`;
+}
 function logout(){
   sessionStorage.removeItem("adminLogged");
   location.href="dashboard.html";
 }
+
+/* elements */
+const mainEl=main,typeEl=type,programEl=program,
+positionEl=position,nameEl=name,officeEl=office,
+success=document.getElementById("success"),
+resultBody=document.getElementById("resultBody");
+
+/* init */
+loadResults();
 </script>
 
 </body>
