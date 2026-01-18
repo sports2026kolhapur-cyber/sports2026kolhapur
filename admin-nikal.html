@@ -64,14 +64,19 @@ button{
   display:none;
   text-align:center;
 }
+.logout{
+  background:#7c2d12;
+}
 </style>
 </head>
 
 <body>
+
 <div class="container">
   <div class="card">
     <h1>🏆 निकाल भरणे (Admin)</h1>
 
+    <!-- कार्यक्रम प्रकार -->
     <label>कार्यक्रम प्रकार</label>
     <select id="main">
       <option value="">— निवडा —</option>
@@ -79,6 +84,7 @@ button{
       <option value="सांस्कृतिक">सांस्कृतिक</option>
     </select>
 
+    <!-- सहभाग प्रकार -->
     <label>सहभाग प्रकार</label>
     <select id="type">
       <option value="">— निवडा —</option>
@@ -87,36 +93,70 @@ button{
       <option value="सांघिक">सांघिक</option>
     </select>
 
+    <!-- खेळ / कार्यक्रम -->
     <label>खेळ / कार्यक्रम</label>
-    <input id="program" placeholder="उदा. ५००० मी धावणे">
+    <select id="program">
+      <option value="">— निवडा —</option>
+    </select>
 
+    <!-- क्रमांक -->
     <label>क्रमांक</label>
     <input id="position" placeholder="उदा. प्रथम / द्वितीय">
 
+    <!-- विजेता -->
     <label>विजेता नाव ( / वापरू शकता )</label>
     <input id="name" placeholder="नाव1 / नाव2 / नाव3">
 
+    <!-- कार्यालय -->
     <label>मंडळ कार्यालय</label>
     <input id="office" placeholder="यांत्रिकी मंडळ, कोल्हापूर">
 
     <button onclick="save()">निकाल Save करा</button>
 
-<div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
+    <div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
 
-<button onclick="logout()">Logout</button>
-</div>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
 </div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-// 🔐 login guard
-if(sessionStorage.getItem("adminLogged")!=="1"){
-  window.location.href="admin-login.html";
+/* 🔐 LOGIN GUARD */
+if(sessionStorage.getItem("adminLogged") !== "1"){
+  location.href = "admin-login.html";
 }
 
+/* 🔁 LOAD PROGRAMS FROM माहिती SHEET */
+document.getElementById("main").addEventListener("change", loadPrograms);
+document.getElementById("type").addEventListener("change", loadPrograms);
+
+async function loadPrograms(){
+  const main = document.getElementById("main").value;
+  const type = document.getElementById("type").value;
+  const program = document.getElementById("program");
+
+  program.innerHTML = `<option value="">— निवडा —</option>`;
+
+  if(!main || !type) return;
+
+  const res = await fetch(
+    `${API}?action=adminPrograms&main=${encodeURIComponent(main)}&type=${encodeURIComponent(type)}`
+  );
+  const list = await res.json();
+
+  list.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p;
+    opt.textContent = p;
+    program.appendChild(opt);
+  });
+}
+
+/* 💾 SAVE RESULT */
 async function save(){
-  document.getElementById("success").style.display="none";
+  document.getElementById("success").style.display = "none";
+
   const main     = document.getElementById("main");
   const type     = document.getElementById("type");
   const program  = document.getElementById("program");
@@ -124,7 +164,6 @@ async function save(){
   const name     = document.getElementById("name");
   const office   = document.getElementById("office");
 
-  // ✅ validation
   if(
     !main.value ||
     !type.value ||
@@ -150,20 +189,23 @@ async function save(){
   const data = await res.json();
 
   if(data.ok){
-    document.getElementById("success").style.display="block";
+    document.getElementById("success").style.display = "block";
 
-    // ✅ clear form
     main.value="";
     type.value="";
-    program.value="";
+    program.innerHTML = `<option value="">— निवडा —</option>`;
     position.value="";
     name.value="";
     office.value="";
   }
 }
 
+/* 🚪 LOGOUT */
 function logout(){
   sessionStorage.removeItem("adminLogged");
   location.href="dashboard.html";
 }
 </script>
+
+</body>
+</html>
