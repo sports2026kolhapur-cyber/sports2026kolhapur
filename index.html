@@ -171,6 +171,22 @@ button{
 </head>
 
 <body>
+  <div id="closedMessage" class="hidden" style="
+  max-width:800px;
+  margin:40px auto;
+  background:#fee2e2;
+  color:#7f1d1d;
+  padding:24px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:700;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+">
+  ⛔ नोंदणी प्रक्रिया आता बंद झाली आहे.  
+  <br><br>
+  कृपया क्रीडा / सांस्कृतिक समितीशी संपर्क साधावा.
+</div>
+
 <!-- ================= WELCOME SCREEN ================= -->
 <div id="welcomeScreen">
   <div class="welcome-box">
@@ -1648,6 +1664,27 @@ instructionScreen.classList.remove("hidden");
     },600);
   },3000);
 });
+  // 🔐 REGISTRATION CLOSE DATE & TIME
+// Format: YYYY-MM-DDTHH:MM (24 hour)
+const REG_CLOSE_DATETIME = new Date("2026-01-25T18:00");
+
+function checkRegistrationStatus() {
+  const now = new Date();
+
+  if (now > REG_CLOSE_DATETIME) {
+    // form hide
+    document.getElementById("sportsForm").style.display = "none";
+
+    // welcome + instruction hide
+    document.getElementById("welcomeScreen").style.display = "none";
+    document.getElementById("instructionScreen").classList.add("hidden");
+
+    // show closed message
+    document.getElementById("closedMessage").classList.remove("hidden");
+  }
+}
+
+window.addEventListener("load", checkRegistrationStatus);
 </script>
 </body>
 </html>
