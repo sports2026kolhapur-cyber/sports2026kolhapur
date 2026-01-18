@@ -11,22 +11,25 @@ body{
   font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
   background:#f1f5f9;
   padding:20px;
+  padding-bottom:90px;   /* ⬅️ हे ADD करा */
   color:#1f2937;
 }
-
 /* Back Button */
 .back-btn{
-  position:fixed;
-  top:16px;
-  left:16px;
-  z-index:999;
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+
   background:#1e40af;
   color:#ffffff;
-  padding:10px 16px;
-  border-radius:10px;
+  padding:12px 22px;
+  border-radius:14px;
   font-weight:700;
   text-decoration:none;
-  box-shadow:0 6px 14px rgba(0,0,0,0.25);
+
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
 }
 .back-btn:hover{
   background:#1d4ed8;
