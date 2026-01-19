@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>नोंदणीपूर्वी सूचना</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --primary:#1e40af;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#1f2937;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+  padding:16px;
+  color:var(--text);
+}
+
+.container{max-width:700px;margin:auto;}
+
+.header{
+  background:var(--primary);
+  color:#fff;
+  padding:22px;
+  border-radius:14px;
+  text-align:center;
+}
+
+.header h1{margin:0;font-size:22px;font-weight:800;}
+.header p{margin-top:6px;font-size:16px;font-weight:600;}
+
+.card{
+  background:var(--card);
+  margin-top:22px;
+  padding:24px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.12);
+}
+
+ul{
+  line-height:1.9;
+  font-weight:600;
+  margin:16px 0;
+}
+
+label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
+  font-weight:700;
+}
+
+button{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#16a34a;
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔐 ACCESS GUARD -->
+<script>
+if (sessionStorage.getItem("regAccess") !== "1") {
+  location.replace("intro.html");
+}
+</script>
+
+<div class="container">
+
+  <!-- SAME HEADING FORMAT AS REGISTRATION -->
+  <div class="header">
+    <h1>नोंदणी करण्यापूर्वी सूचना</h1>
+    <p>कृपया पुढे जाण्यापूर्वी खालील सर्व सूचना काळजीपूर्वक वाचा</p>
+  </div>
+
+  <div class="card">
+
+    <ul>
+      <li>एका व्यक्तीस जास्तीत जास्त <b>२ क्रीडा स्पर्धा</b> करता येतील.</li>
+      <li>एका व्यक्तीस जास्तीत जास्त <b>२ सांस्कृतिक कार्यक्रम</b> करता येतील.</li>
+      <li>पहिले नाव, मधले नाव व आडनाव <b>वेगवेगळ्या field मध्ये</b> भरणे बंधनकारक आहे.</li>
+      <li>एकाच व्यक्तीची duplicate नोंद मान्य केली जाणार नाही.</li>
+      <li>नोंदणी submit केल्यानंतर बदल करता येणार नाही.</li>
+    </ul>
+
+    <label>
+      <input type="checkbox" id="agree">
+      मी वरील सर्व सूचना वाचल्या असून त्यास सहमत आहे.
+    </label>
+
+    <button id="nextBtn" disabled>पुढे जा</button>
+
+  </div>
+</div>
+
+<script>
+const agree = document.getElementById("agree");
+const nextBtn = document.getElementById("nextBtn");
+
+agree.addEventListener("change", ()=>{
+  nextBtn.disabled = !agree.checked;
+});
+
+nextBtn.addEventListener("click", ()=>{
+  sessionStorage.setItem("regAgreed","1");
+  location.href = "registration.html";
+});
+</script>
+
+</body>
+</html>
