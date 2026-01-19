@@ -174,7 +174,7 @@ button{
 /* 🔐 Registration Access Guard */
 if (sessionStorage.getItem("regAccess") !== "1") {
   // registration-login शिवाय direct access बंद
-  window.location.href = "intro.html";
+  window.location.replace("intro.html");
 }
 </script>
   <div id="closedMessage" class="hidden" style="
@@ -1732,8 +1732,8 @@ function checkRegistrationStatus() {
     document.getElementById("closedMessage").classList.remove("hidden");
   }
 }
-
-window.addEventListener("load", checkRegistrationStatus);
+checkRegistrationStatus();
+});
 </script>
 </body>
 </html>
