@@ -133,7 +133,7 @@ a.map{
 
   <!-- Error -->
   <div id="error" class="error">
-  ❌ निवास माहिती उपलब्ध नाही  
+  <div id="errorMsg">❌ निवास माहिती उपलब्ध नाही</div>
 
   <div class="contact">
     <div><b>संपर्क – आयोजक</b></div>
@@ -161,18 +161,33 @@ a.map{
 </div>
 
 <script>
+<script>
 const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-async function check(){
-  const mob = document.getElementById("mobile").value.trim();
+/* 🔗 ELEMENT REFERENCES (MUST) */
+const mobile   = document.getElementById("mobile");
+const btn      = document.getElementById("btn");
+const loader   = document.getElementById("loader");
 
-  // reset UI
+const info     = document.getElementById("info");
+const error    = document.getElementById("error");
+const errorMsg = document.getElementById("errorMsg");
+
+const name     = document.getElementById("name");
+const office   = document.getElementById("office");
+const stay     = document.getElementById("stay");
+const room     = document.getElementById("room");
+const map      = document.getElementById("map");
+
+async function check(){
+  const mob = mobile.value.trim();
+
   info.style.display="none";
   error.style.display="none";
 
   if(!/^\d{10}$/.test(mob)){
+    errorMsg.textContent="❌ कृपया 10 अंकी मोबाईल नंबर टाका";
     error.style.display="block";
-    error.firstChild.textContent="❌ कृपया 10 अंकी मोबाईल नंबर टाका";
     return;
   }
 
@@ -187,6 +202,7 @@ async function check(){
     btn.disabled=false;
 
     if(!d.ok){
+      errorMsg.textContent="❌ निवास माहिती उपलब्ध नाही";
       error.style.display="block";
       return;
     }
@@ -196,11 +212,18 @@ async function check(){
     office.textContent = d.office || "-";
     stay.textContent = d.stay || "-";
     room.textContent = d.room || "-";
-    map.href = d.map || "#";
+
+    if(d.map){
+      map.href=d.map;
+      map.style.display="block";
+    }else{
+      map.style.display="none";
+    }
 
   }catch(e){
     loader.style.display="none";
     btn.disabled=false;
+    errorMsg.textContent="❌ सर्व्हरशी संपर्क होत नाही";
     error.style.display="block";
   }
 }
