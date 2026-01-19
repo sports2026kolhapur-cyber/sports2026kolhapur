@@ -883,8 +883,7 @@ function validateMarathiFieldsBeforeSubmit(){
   }
   return true;
 }
-  });
-}
+ 
 
 
 // ================== UI: EVENT TYPE CHANGE =================
@@ -1171,7 +1170,6 @@ else if (culturalType.value === "team") {
   // 🔥 FIX: team change झाला की जुने कलाकार clear
   document.getElementById("culturalPlayers").innerHTML = "";
 
-  toggleRequired(document.getElementById("culturalPlayers"), true);
 
   ["cTeamName","cCaptainFirstName","cCaptainMiddleName","cCaptainLastName",
    "cCaptainArrivalDate","cCaptainGender","cCaptainPadnaam","cCaptainMobile"]
