@@ -169,8 +169,14 @@ button{
 }
 </style>
 </head>
-
-<body>
+  <body>
+<script>
+/* 🔐 Registration Access Guard */
+if (sessionStorage.getItem("regAccess") !== "1") {
+  // registration-login शिवाय direct access बंद
+  window.location.href = "intro.html";
+}
+</script>
   <div id="closedMessage" class="hidden" style="
   max-width:800px;
   margin:40px auto;
@@ -986,6 +992,7 @@ agreeCheck.addEventListener("change", () => {
 });
 
 agreeBtn.addEventListener("click", () => {
+  sessionStorage.setItem("regAgreed", "1"); // 🔐 ADD THIS
   instructionScreen.classList.add("hidden");
   document.getElementById("mainForm").classList.remove("hidden");
 
@@ -1439,6 +1446,9 @@ fetch(GOOGLE_SCRIPT_URL, {
     const data = await res.json();
     
     if (data.ok) {
+      // 🔐 STEP 4 – CLEAN EXIT (MANDATORY)
+  sessionStorage.removeItem("regAgreed");
+  sessionStorage.removeItem("regAccess");
   successBox.style.display = "block";
 
   sportsForm.reset();
@@ -1665,27 +1675,35 @@ return {
   return {...base, participationType:"", itemName:"", subType:"", teamName:"", participants:[]};
 }
 
-// ================= WELCOME AUTO HIDE =================
 window.addEventListener("load", ()=>{
 
   attachMarathiGuards();
   applyMarathiValidation();
 
-  // ✅ CRITICAL FIX – hidden sections ला required OFF
   toggleRequired(document.getElementById("teamSection"), false);
   toggleRequired(document.getElementById("culturalTeam"), false);
   toggleRequired(document.getElementById("playersList"), false);
   toggleRequired(document.getElementById("culturalPlayers"), false);
 
+  /* 🔐 Instruction / Form state */
+  if (sessionStorage.getItem("regAgreed") === "1") {
+    instructionScreen.classList.add("hidden");
+    document.getElementById("mainForm").classList.remove("hidden");
+  } else {
+    instructionScreen.classList.remove("hidden");
+    document.getElementById("mainForm").classList.add("hidden");
+  }
+
+  // Welcome animation only
   setTimeout(()=>{
     const w=document.getElementById("welcomeScreen");
     w.classList.add("fade-out");
     setTimeout(()=>{
       w.style.display="none";
-instructionScreen.classList.remove("hidden");
     },600);
   },3000);
 });
+
   // 🔐 REGISTRATION CLOSE DATE & TIME
 // Format: YYYY-MM-DDTHH:MM (24 hour)
 const REG_CLOSE_DATETIME = new Date("2026-01-25T18:00");
