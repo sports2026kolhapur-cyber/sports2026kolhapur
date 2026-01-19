@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>नोंदणी प्रवेश – Access Code</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f1f5f9;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+}
+.card{
+  background:#ffffff;
+  padding:30px;
+  border-radius:14px;
+  width:100%;
+  max-width:360px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  text-align:center;
+}
+h1{
+  margin-top:0;
+  color:#1e40af;
+}
+input{
+  width:100%;
+  padding:14px;
+  margin-top:18px;
+  font-size:16px;
+  border-radius:10px;
+  border:1.8px solid #cbd5e1;
+}
+button{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:#16a34a;
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+button:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+}
+.error{
+  margin-top:16px;
+  color:#b91c1c;
+  font-weight:700;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>🔐 नोंदणी प्रवेश</h1>
+  <p>नोंदणी करण्यासाठी Access Code टाका</p>
+
+  <input type="password" id="code" placeholder="Registration Access Code">
+
+  <button id="btn" onclick="login()">Verify & पुढे जा</button>
+
+  <div id="error" class="error">❌ चुकीचा किंवा निष्क्रिय Access Code</div>
+</div>
+
+<script>
+const API =
+  "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+
+async function login(){
+  const code = document.getElementById("code").value.trim();
+  if(!code) return;
+
+  document.getElementById("error").style.display="none";
+  document.getElementById("btn").disabled=true;
+
+  try{
+    const res = await fetch(
+      `${API}?action=verifyAccessCode&code=${encodeURIComponent(code)}`
+    );
+    const data = await res.json();
+
+    if(data.ok){
+      // 🔐 session flag for registration
+      sessionStorage.setItem("regAccess","1");
+      window.location.href = "instruction.html";
+    }else{
+      document.getElementById("error").style.display="block";
+    }
+  }catch(e){
+    document.getElementById("error").textContent="❌ सर्व्हरशी संपर्क होत नाही";
+    document.getElementById("error").style.display="block";
+  }
+
+  document.getElementById("btn").disabled=false;
+}
+</script>
+
+</body>
+</html>
