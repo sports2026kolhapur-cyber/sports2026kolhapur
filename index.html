@@ -883,14 +883,6 @@ function validateMarathiFieldsBeforeSubmit(){
   }
   return true;
 }
-function toggleRequired(container, enable) {
-  container.querySelectorAll("input, select, textarea").forEach(el => {
-    if (enable) {
-      if (el.dataset.wasRequired === "1") el.required = true;
-    } else {
-      if (el.required) el.dataset.wasRequired = "1";
-      el.required = false;
-    }
   });
 }
 
@@ -1577,13 +1569,6 @@ window.addEventListener("load", ()=>{
   
 // ✅ SHOW MAIN FORM (since regAgreed removed)
 document.getElementById("mainForm").classList.remove("hidden");
-
-  toggleRequired(document.getElementById("teamSection"), false);
-  toggleRequired(document.getElementById("culturalTeam"), false);
-  toggleRequired(document.getElementById("playersList"), false);
-  toggleRequired(document.getElementById("culturalPlayers"), false);
-
- 
 
  
 
