@@ -22,6 +22,54 @@ body{
   padding:16px;
   color:var(--text);
 }
+/* ===== WELCOME SCREEN ===== */
+#welcomeScreen{
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.20),
+      rgba(0,0,0,0.45)
+    ),
+    url("https://cdnbbsr.s3waas.gov.in/s37cac11e2f46ed46c339ec3d569853759/uploads/bfi_thumb/20250218692577894-scaled-r1oerplkbmcnpcd6aly0icgmwboje1upkapq8gyqcg.jpg")
+    center / cover no-repeat;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.welcome-box{
+  background: rgba(0,0,0,0.35);
+  padding:48px 56px;
+  border-radius:16px;
+  text-align:center;
+  color:#fff;
+  animation:fadeIn 1.2s ease;
+}
+
+.welcome-box h1{
+  font-size:34px;
+  font-weight:800;
+  margin-bottom:10px;
+  text-shadow:0 3px 8px rgba(0,0,0,0.75);
+}
+
+.welcome-box p{
+  font-size:20px;
+  font-weight:600;
+  color:#e5e7eb;
+}
+
+.fade-out{
+  opacity:0;
+  transition:opacity 0.6s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
 .welcome-hero{
   position:relative;
   height:240px;
@@ -121,22 +169,22 @@ body{
   .header h1{font-size:20px;}
   .header p{font-size:15px;}
 }
+  
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<!-- 🌸 WELCOME MESSAGE WITH IMAGE -->
-<div class="welcome-hero">
-  <div class="welcome-overlay">
-    <div class="welcome-text">
-      <h2>नमस्कार 🙏</h2>
-      <p>यांत्रिकी मंडळ, कोल्हापूर आपले मनःपूर्वक स्वागत करत आहे</p>
-    </div>
+<!-- ================= WELCOME SCREEN ================= -->
+<div id="welcomeScreen">
+  <div class="welcome-box">
+    <h1>यांत्रिकी मंडळ, कोल्हापूर</h1>
+    <p>आपले हार्दिक स्वागत करीत आहे</p>
   </div>
 </div>
 
+<div id="introContent" style="display:none;">
   <!-- SAME HEADING AS REGISTRATION PAGE -->
   <div class="header">
     <h1>यांत्रिकी मंडळ, कोल्हापूर अंतर्गत</h1>
@@ -165,6 +213,32 @@ body{
 
   </div>
 </div>
-
+</div>
 </body>
+  <script>
+window.addEventListener("load", ()=>{
+
+  // 🔁 once-per-session welcome
+  if (sessionStorage.getItem("welcomeDone") === "1") {
+    document.getElementById("welcomeScreen").style.display = "none";
+    document.getElementById("introContent").style.display = "block";
+    return;
+  }
+
+  setTimeout(()=>{
+    const w = document.getElementById("welcomeScreen");
+    w.classList.add("fade-out");
+
+    setTimeout(()=>{
+      w.style.display = "none";
+      document.getElementById("introContent").style.display = "block";
+
+      // ✅ mark welcome done
+      sessionStorage.setItem("welcomeDone","1");
+    },600);
+
+  },3000); // ⏱️ 3 seconds
+});
+</script>
+
 </html>
