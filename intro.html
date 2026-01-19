@@ -37,7 +37,7 @@ body{
 .welcome-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.45);
+  background:rgba(0,0,0,0.55);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -59,6 +59,12 @@ body{
   margin-top:8px;
   font-size:17px;
   font-weight:600;
+}
+  
+@media(max-width:480px){
+  .welcome-hero{
+    height:200px;
+  }
 }
 
 .container{max-width:800px;margin:auto;}
