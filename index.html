@@ -119,43 +119,14 @@ button{
   text-align:center;
 }
 
-/* ===== WELCOME SCREEN ===== */
-#welcomeScreen{
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(
-      rgba(0,0,0,0.20),
-      rgba(0,0,0,0.45)
-    ),
     url("https://cdnbbsr.s3waas.gov.in/s37cac11e2f46ed46c339ec3d569853759/uploads/bfi_thumb/20250218692577894-scaled-r1oerplkbmcnpcd6aly0icgmwboje1upkapq8gyqcg.jpg") 52% center / cover no-repeat;
   z-index:9999;
   display:flex;
   align-items:center;
   justify-content:center;
 }
-.welcome-box{
-  position:relative;
-  background: rgba(0,0,0,0.30);
-  padding:48px 56px;
-  border-radius:16px;
-  text-align:center;
-  color:#ffffff;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
-  animation:fadeIn 1.2s ease;
-}
-.welcome-box h1{
-  color:#ffffff;
-  text-shadow:0 3px 8px rgba(0,0,0,0.75);
-}
 
-.welcome-box p{
-  color:#e5e7eb;
-  text-shadow:0 2px 6px rgba(0,0,0,0.6);
-}
 
-.welcome-box h1{font-size:34px;font-weight:800;margin-bottom:10px;}
-.welcome-box p{font-size:20px;font-weight:600;}
 
 .fade-out{opacity:0;transition:opacity 0.6s ease;}
 
@@ -164,9 +135,7 @@ button{
   to{opacity:1; transform:translateY(0);}
 }
 /* ===== OPTION B: Instructions width polish ===== */
-#instructionScreen .container {
-  max-width: 650px;
-}
+
 </style>
 </head>
   <body>
@@ -1389,7 +1358,7 @@ fetch(GOOGLE_SCRIPT_URL, {
     
     if (data.ok) {
       // 🔐 STEP 4 – CLEAN EXIT (MANDATORY)
-  sessionStorage.removeItem("regAgreed");
+ 
   sessionStorage.removeItem("regAccess");
   successBox.style.display = "block";
 
@@ -1621,20 +1590,16 @@ window.addEventListener("load", ()=>{
 
   attachMarathiGuards();
   applyMarathiValidation();
+  
+// ✅ SHOW MAIN FORM (since regAgreed removed)
+document.getElementById("mainForm").classList.remove("hidden");
 
   toggleRequired(document.getElementById("teamSection"), false);
   toggleRequired(document.getElementById("culturalTeam"), false);
   toggleRequired(document.getElementById("playersList"), false);
   toggleRequired(document.getElementById("culturalPlayers"), false);
 
-  /* 🔐 Instruction / Form state */
-  if (sessionStorage.getItem("regAgreed") === "1") {
-    instructionScreen.classList.add("hidden");
-    document.getElementById("mainForm").classList.remove("hidden");
-  } else {
-    instructionScreen.classList.remove("hidden");
-    document.getElementById("mainForm").classList.add("hidden");
-  }
+ 
 
  
 
@@ -1648,10 +1613,7 @@ function checkRegistrationStatus() {
   if (now > REG_CLOSE_DATETIME) {
     // form hide
     document.getElementById("sportsForm").style.display = "none";
-
-    // welcome + instruction hide
-    document.getElementById("welcomeScreen").style.display = "none";
-    document.getElementById("instructionScreen").classList.add("hidden");
+    
 
     // show closed message
     document.getElementById("closedMessage").classList.remove("hidden");
