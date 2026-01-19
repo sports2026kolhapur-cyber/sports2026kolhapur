@@ -193,48 +193,6 @@ if (sessionStorage.getItem("regAccess") !== "1") {
   कृपया क्रीडा / सांस्कृतिक समितीशी संपर्क साधावा.
 </div>
 
-<!-- ================= WELCOME SCREEN ================= -->
-<div id="welcomeScreen">
-  <div class="welcome-box">
-    <h1>यांत्रिकी मंडळ, कोल्हापूर</h1>
-    <p>आपले हार्दिक स्वागत करीत आहे.</p>
-  </div>
-</div>
-<!-- ================= INSTRUCTIONS SCREEN ================= -->
-<div id="instructionScreen" class="hidden">
-  <div class="container">
-<div class="header">
-  
-  <h1>नोंदणी करण्यापूर्वी सूचना</h1>
-  <p>कृपया पुढे जाण्यापूर्वी खालील सर्व सूचना काळजीपूर्वक वाचा</p>
-</div>
-    <div class="card">
-      <h2 style="color:#1e40af; text-align:center;">📌 महत्त्वाच्या सूचना</h2>
-
-      <ul style="line-height:1.9; font-weight:600; margin-top:16px;">
-        <li>एका व्यक्तीस जास्तीत जास्त <b>२ क्रीडा स्पर्धा</b> करता येतील.</li>
-        <li>एका व्यक्तीस जास्तीत जास्त <b>२ सांस्कृतिक कार्यक्रम</b> करता येतील.</li>
-        <li>पहिले नाव, मधले नाव व आडनाव <b>वेगवेगळ्या field मध्ये</b> भरणे बंधनकारक आहे.</li>
-        <li>एकाच व्यक्तीची duplicate नोंद मान्य केली जाणार नाही.</li>
-        <li>नोंदणी submit केल्यानंतर बदल करता येणार नाही.</li>
-      </ul>
-
-      <label style="
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:20px;
-  font-weight:600;
-">
-  <input type="checkbox" id="agreeCheck" style="width:auto; margin:0;">
-  मी वरील सर्व सूचना वाचल्या असून त्यास सहमत आहे.
-</label>
-
-      <button id="agreeBtn" disabled style="margin-top:20px;">
-        पुढे जा
-      </button>
-    </div>
-  </div>
 </div>
 
 <div class="container hidden" id="mainForm">
@@ -982,23 +940,7 @@ function toggleRequired(container, enable) {
     }
   });
 }
-// ================= INSTRUCTIONS FLOW =================
-const instructionScreen = document.getElementById("instructionScreen");
-const agreeCheck = document.getElementById("agreeCheck");
-const agreeBtn = document.getElementById("agreeBtn");
 
-agreeCheck.addEventListener("change", () => {
-  agreeBtn.disabled = !agreeCheck.checked;
-});
-
-agreeBtn.addEventListener("click", () => {
-  sessionStorage.setItem("regAgreed", "1"); // 🔐 ADD THIS
-  instructionScreen.classList.add("hidden");
-  document.getElementById("mainForm").classList.remove("hidden");
-
-  // ✅ OPTION A: form top ला scroll
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
 
 // ================== UI: EVENT TYPE CHANGE =================
 function handleEventTypeChange(){
@@ -1694,24 +1636,7 @@ window.addEventListener("load", ()=>{
     document.getElementById("mainForm").classList.add("hidden");
   }
 
-  // ================= WELCOME ANIMATION CONTROL =================
-const welcomeScreen = document.getElementById("welcomeScreen");
-
-if (sessionStorage.getItem("welcomeShown") === "1") {
-  // 🔕 Already shown → hide immediately
-  welcomeScreen.style.display = "none";
-} else {
-  // 🎉 First time only
-  sessionStorage.setItem("welcomeShown", "1");
-
-  setTimeout(() => {
-    welcomeScreen.classList.add("fade-out");
-    setTimeout(() => {
-      welcomeScreen.style.display = "none";
-    }, 600);
-  }, 3000);
-}
-
+ 
 
   // 🔐 REGISTRATION CLOSE DATE & TIME
 // Format: YYYY-MM-DDTHH:MM (24 hour)
