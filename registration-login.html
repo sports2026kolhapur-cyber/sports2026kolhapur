@@ -94,7 +94,7 @@ async function login(){
     if(data.ok){
       // 🔐 session flag for registration
       sessionStorage.setItem("regAccess","1");
-      window.location.href = "instruction.html";
+      window.location.href = "index.html";
     }else{
       document.getElementById("error").style.display="block";
     }
