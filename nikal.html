@@ -12,6 +12,7 @@
   --card:#ffffff;
   --text:#1f2937;
   --success:#16a34a;
+  --danger:#dc2626;
 }
 
 *{box-sizing:border-box;}
@@ -19,7 +20,7 @@
 body{
   margin:0;
   padding:16px;
-  padding-bottom:90px; /* ⬅️ back button साठी जागा */
+  padding-bottom:90px;
   background:var(--bg);
   color:var(--text);
   font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
@@ -27,7 +28,7 @@ body{
 
 .container{max-width:900px;margin:auto;}
 
-.header{
+header{
   background:var(--primary);
   color:#fff;
   padding:22px;
@@ -35,8 +36,8 @@ body{
   text-align:center;
 }
 
-.header h1{margin:0;font-size:24px;font-weight:800;}
-.header p{margin-top:6px;font-size:16px;font-weight:600;}
+header h1{margin:0;font-size:24px;font-weight:800;}
+header p{margin-top:6px;font-size:16px;font-weight:600;}
 
 .card{
   background:var(--card);
@@ -46,11 +47,7 @@ body{
   box-shadow:0 8px 20px rgba(0,0,0,0.12);
 }
 
-h2{
-  margin-top:0;
-  color:var(--primary);
-  font-size:18px;
-}
+h2{margin-top:0;color:var(--primary);font-size:18px;}
 
 .grid{
   display:grid;
@@ -70,9 +67,7 @@ button{
   cursor:pointer;
 }
 
-button.secondary{
-  background:#334155;
-}
+button.secondary{background:#334155;}
 
 .hidden{display:none;}
 
@@ -84,50 +79,139 @@ button.secondary{
   margin-bottom:14px;
 }
 
-.rank{
-  font-size:20px;
-  font-weight:800;
-}
+.rank{font-size:20px;font-weight:800;}
 
 .office{
   margin-top:6px;
   font-weight:600;
   color:#065f46;
 }
-  .back-btn{
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
 
+.error{
+  font-weight:700;
+  color:var(--danger);
+  margin-top:10px;
+}
+
+/* Back button */
+.back-btn{
+  position:fixed;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
   background:#1e40af;
-  color:#ffffff;
+  color:#fff;
   padding:12px 22px;
   border-radius:14px;
   font-weight:700;
   text-decoration:none;
-
   box-shadow:0 8px 20px rgba(0,0,0,0.3);
-    white-space: nowrap;
+  z-index:999;
 }
-.back-btn:hover{
-  background:#1d4ed8;
+
+/* ================= MEGA CELEBRATION ================= */
+.celebration{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:9999;
+  overflow:hidden;
+}
+
+.celebration.hidden{display:none;}
+
+.celebrate-text{
+  position:absolute;
+  top:40%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  color:#fff;
+  font-size:32px;
+  font-weight:900;
+  text-align:center;
+  animation:pop 0.6s ease;
+}
+
+
+/* Burst zones */
+.burst{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+/* Confetti */
+.confetti{
+  position:absolute;
+  width:8px;
+  height:18px;
+  opacity:0.95;
+  animation-timing-function:ease-out;
+  animation-fill-mode:forwards;
+}
+
+/* Colors */
+.confetti:nth-child(5n){background:#facc15;}
+.confetti:nth-child(5n+1){background:#22c55e;}
+.confetti:nth-child(5n+2){background:#38bdf8;}
+.confetti:nth-child(5n+3){background:#fb7185;}
+.confetti:nth-child(5n+4){background:#a78bfa;}
+
+/* Animations */
+@keyframes blastLeft{
+  from{transform:translate(0,0) rotate(0);opacity:1;}
+  to{transform:translate(-600px,-800px) rotate(1440deg);opacity:0;}
+}
+@keyframes blastRight{
+  from{transform:translate(0,0) rotate(0);opacity:1;}
+  to{transform:translate(600px,-800px) rotate(-1440deg);opacity:0;}
+}
+@keyframes blastTop{
+  from{transform:translate(0,0) rotate(0);opacity:1;}
+  to{transform:translate(0,900px) rotate(1440deg);opacity:0;}
+}
+
+/* Random spread */
+.confetti:nth-child(odd){width:6px;height:14px;}
+.confetti:nth-child(even){width:10px;height:20px;}
+
+@keyframes pop{
+  from{transform:scale(0.5);opacity:0;}
+  to{transform:scale(1);opacity:1;}
 }
 </style>
 </head>
 
 <body>
-  <a href="dashboard.html" class="back-btn">⬅️ डॅशबोर्डवर परत जा</a>
-<div class="container">
 
-<!-- ================= HEADER ================= -->
-<div class="header">
-  <h1>🏆 क्रीडा स्पर्धा / सांस्कृतिक कार्यक्रम निकाल – २०२६</h1>
-  <p>यांत्रिकी मंडळ वार्षिक क्रीडा व सांस्कृतिक कार्यक्रम</p>
+<!-- 🎉 Celebration Overlay -->
+<div id="celebration" class="celebration hidden">
+
+  <!-- LEFT BLAST -->
+  <div class="burst" id="leftBurst"></div>
+
+  <!-- RIGHT BLAST -->
+  <div class="burst" id="rightBurst"></div>
+
+  <!-- TOP FALL -->
+  <div class="burst" id="topBurst"></div>
+
+  <div class="celebrate-text">
+    🎉 अभिनंदन 🎉<br>निकाल जाहीर!
+  </div>
+
 </div>
 
-<!-- ================= STEP 1 ================= -->
+<a href="dashboard.html" class="back-btn">⬅️ डॅशबोर्डवर परत जा</a>
+
+<div class="container">
+
+<header>
+  <h1>🏆 क्रीडा स्पर्धा / सांस्कृतिक कार्यक्रम निकाल – २०२६</h1>
+  <p>यांत्रिकी मंडळ वार्षिक क्रीडा व सांस्कृतिक कार्यक्रम</p>
+</header>
+
 <div class="card" id="step1">
   <h2>कार्यक्रम प्रकार निवडा</h2>
   <div class="grid">
@@ -136,7 +220,6 @@ button.secondary{
   </div>
 </div>
 
-<!-- ================= STEP 2 ================= -->
 <div class="card hidden" id="step2">
   <h2>सहभाग प्रकार निवडा</h2>
   <div class="grid">
@@ -146,13 +229,11 @@ button.secondary{
   </div>
 </div>
 
-<!-- ================= STEP 3 ================= -->
 <div class="card hidden" id="step3">
   <h2>खेळ / कार्यक्रम निवडा</h2>
   <div id="programList" class="grid"></div>
 </div>
 
-<!-- ================= STEP 4 ================= -->
 <div class="card hidden" id="step4">
   <h2>निकाल</h2>
   <div id="resultBox"></div>
@@ -161,92 +242,110 @@ button.secondary{
 </div>
 
 <script>
-// ================= CONFIG =================
-const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-// ================= STATE =================
-let mainType = "";
-let partType = "";
+let mainType="", partType="";
+let celebrating=false;
 
-// ================= STEP 1 =================
 function selectMain(m){
-  mainType = m;
-  partType = "";
-
-  document.getElementById("step2").classList.remove("hidden");
-  document.getElementById("step3").classList.add("hidden");
-  document.getElementById("step4").classList.add("hidden");
-
-  document.getElementById("programList").innerHTML = "";
-  document.getElementById("resultBox").innerHTML = "";
+  mainType=m;
+  partType="";
+  step2.classList.remove("hidden");
+  step3.classList.add("hidden");
+  step4.classList.add("hidden");
+  programList.innerHTML="";
+  resultBox.innerHTML="";
 }
 
-
-// ================= STEP 2 =================
 function selectType(t){
-  partType = t;
+  partType=t;
+  step4.classList.add("hidden");
+  resultBox.innerHTML="";
   loadPrograms();
 }
 
-// ================= STEP 3 =================
 async function loadPrograms(){
-  document.getElementById("step3").classList.remove("hidden");
-  document.getElementById("step4").classList.add("hidden");
-
-  const res = await fetch(
-    `${API}?action=programs&main=${mainType}&type=${partType}`
-  );
-  const list = await res.json();
-
-  const box = document.getElementById("programList");
-  box.innerHTML = "";
-
-  if(!list.length){
-    box.innerHTML = "<p>❌ कार्यक्रम उपलब्ध नाहीत.</p>";
-    return;
+  step3.classList.remove("hidden");
+  programList.innerHTML="लोड होत आहे...";
+  try{
+    const res=await fetch(`${API}?action=programs&main=${mainType}&type=${partType}`);
+    const list=await res.json();
+    programList.innerHTML="";
+    list.forEach(p=>{
+      const b=document.createElement("button");
+      b.className="secondary";
+      b.textContent=p;
+      b.onclick=()=>loadResult(p);
+      programList.appendChild(b);
+    });
+  }catch{
+    programList.innerHTML="<div class='error'>कार्यक्रम लोड करता आला नाही</div>";
   }
-
-  list.forEach(p=>{
-    const btn = document.createElement("button");
-    btn.className = "secondary";
-    btn.textContent = p;
-    btn.onclick = ()=>loadResult(p);
-    box.appendChild(btn);
-  });
 }
 
-// ================= STEP 4 =================
+function medal(pos){
+  if(pos==1) return "🥇 प्रथम";
+  if(pos==2) return "🥈 द्वितीय";
+  if(pos==3) return "🥉 तृतीय";
+  return pos;
+}
+
 async function loadResult(program){
-  document.getElementById("step4").classList.remove("hidden");
-
-  const res = await fetch(
-    `${API}?action=result&main=${mainType}&type=${partType}&program=${encodeURIComponent(program)}`
-  );
-  const data = await res.json();
-
-  const box = document.getElementById("resultBox");
-  box.innerHTML = "";
-
-  if(!data.length){
-    box.innerHTML = "<p>❌ निकाल उपलब्ध नाही.</p>";
-    return;
+  step4.classList.remove("hidden");
+  resultBox.innerHTML="निकाल लोड होत आहे...";
+  try{
+    const res=await fetch(`${API}?action=result&main=${mainType}&type=${partType}&program=${encodeURIComponent(program)}`);
+    const data=await res.json();
+    if(!data || data.length===0){
+      resultBox.innerHTML="<div class='error'>निकाल उपलब्ध नाही</div>";
+      return;
+    }
+    resultBox.innerHTML="";
+    data.forEach(r=>{
+      resultBox.innerHTML+=`
+        <div class="result-card">
+          <div class="rank">${medal(r.position)}</div>
+          <div>${(r.name||"").split("/").join("<br>")}</div>
+          <div class="office">${r.office||""}</div>
+        </div>`;
+    });
+    showCelebration();
+  }catch{
+    resultBox.innerHTML="<div class='error'>निकाल मिळवताना अडचण आली</div>";
   }
-
-  data.forEach(r=>{
-    const names = (r.name || "")
-      .split("/")
-      .map(n=>n.trim())
-      .join("<br>");
-
-    box.innerHTML += `
-      <div class="result-card">
-        <div class="rank">🏅 ${r.position}</div>
-        <div>${names}</div>
-        <div class="office">${r.office}</div>
-      </div>
-    `;
-  });
 }
+
+function createConfetti(container, count, animation){
+  container.innerHTML="";
+  for(let i=0;i<count;i++){
+    const c=document.createElement("span");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"%";
+    c.style.bottom="0";
+    c.style.animationName=animation;
+    c.style.animationDuration=(2.5+Math.random()*1.5)+"s";
+c.style.transform = `rotate(${Math.random()*360}deg)`;
+    container.appendChild(c);
+  }
+}
+
+function showCelebration(){
+  if(celebrating) return;
+  celebrating=true;
+
+  celebration.classList.remove("hidden");
+
+  createConfetti(leftBurst,30,"blastLeft");
+  createConfetti(rightBurst,30,"blastRight");
+  createConfetti(topBurst,25,"blastTop");
+
+  setTimeout(()=>{
+    celebration.classList.add("hidden");
+    celebrating=false;
+  },3500);
+}
+
 </script>
+
 </body>
 </html>
