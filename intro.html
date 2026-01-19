@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>यांत्रिकी मंडळ – प्रवेश पृष्ठ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --primary:#1e40af;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#1f2937;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+  background:var(--bg);
+  padding:16px;
+  color:var(--text);
+}
+
+.container{max-width:800px;margin:auto;}
+
+.header{
+  text-align:center;
+  padding:22px;
+  border-radius:14px;
+  background:var(--primary);
+  color:#fff;
+  margin-bottom:24px;
+}
+
+.header h1{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+}
+.header p{
+  margin-top:6px;
+  font-size:16px;
+  font-weight:600;
+}
+
+.card{
+  background:var(--card);
+  border-radius:14px;
+  padding:26px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  text-align:center;
+}
+
+.btn{
+  display:block;
+  width:100%;
+  padding:16px;
+  margin-top:18px;
+  border:none;
+  border-radius:12px;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+  color:#fff;
+  text-decoration:none;
+}
+
+.btn-register{background:#16a34a;}
+.btn-dashboard{background:#0ea5e9;}
+.btn-admin{background:#7c2d12;}
+
+.btn:hover{opacity:0.92;}
+
+@media(max-width:480px){
+  .header h1{font-size:20px;}
+  .header p{font-size:15px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SAME HEADING AS REGISTRATION PAGE -->
+  <div class="header">
+    <h1>यांत्रिकी मंडळ, कोल्हापूर अंतर्गत</h1>
+    <p>वार्षिक क्रीडा व सांस्कृतिक कार्यक्रम २०२६</p>
+  </div>
+
+  <div class="card">
+
+    <!-- 1️⃣ NEW REGISTRATION -->
+    <button class="btn btn-register"
+      onclick="location.href='registration-login.html'">
+      📝 नवीन खेळाडूंचे / कलाकारांचे नोंदणी
+    </button>
+
+    <!-- 2️⃣ DASHBOARD -->
+    <button class="btn btn-dashboard"
+      onclick="location.href='dashboard.html'">
+      📊 Dashboard पाहा
+    </button>
+
+    <!-- 3️⃣ ADMIN LOGIN -->
+    <button class="btn btn-admin"
+      onclick="location.href='admin-login.html'">
+      🔐 Admin Login
+    </button>
+
+  </div>
+</div>
+
+</body>
+</html>
