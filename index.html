@@ -1694,15 +1694,24 @@ window.addEventListener("load", ()=>{
     document.getElementById("mainForm").classList.add("hidden");
   }
 
-  // Welcome animation only
-  setTimeout(()=>{
-    const w=document.getElementById("welcomeScreen");
-    w.classList.add("fade-out");
-    setTimeout(()=>{
-      w.style.display="none";
-    },600);
-  },3000);
-});
+  // ================= WELCOME ANIMATION CONTROL =================
+const welcomeScreen = document.getElementById("welcomeScreen");
+
+if (sessionStorage.getItem("welcomeShown") === "1") {
+  // 🔕 Already shown → hide immediately
+  welcomeScreen.style.display = "none";
+} else {
+  // 🎉 First time only
+  sessionStorage.setItem("welcomeShown", "1");
+
+  setTimeout(() => {
+    welcomeScreen.classList.add("fade-out");
+    setTimeout(() => {
+      welcomeScreen.style.display = "none";
+    }, 600);
+  }, 3000);
+}
+
 
   // 🔐 REGISTRATION CLOSE DATE & TIME
 // Format: YYYY-MM-DDTHH:MM (24 hour)
