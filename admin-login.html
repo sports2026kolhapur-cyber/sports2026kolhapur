@@ -86,11 +86,17 @@ async function login(){
   const data = await res.json();
 
   if(data.ok){
-    sessionStorage.setItem("adminLogged","1");
-    sessionStorage.setItem("adminToken", data.adminToken);
+  sessionStorage.setItem("adminLogged","1");
+  sessionStorage.setItem("adminToken", data.adminToken);
 
-    window.location.href = "admin-options.html";
-  }else{
+  console.log("AFTER SET:");
+  console.log("adminLogged =", sessionStorage.getItem("adminLogged"));
+  console.log("adminToken =", sessionStorage.getItem("adminToken"));
+
+  // TEMPORARILY stop redirect
+  // window.location.href = "admin-options.html";
+}
+else{
     document.getElementById("error").style.display="block";
   }
 }
