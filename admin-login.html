@@ -73,31 +73,35 @@ button{
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
 async function login(){
-  async function login(){
-  console.log("LOGIN PAGE VERSION 2026"); // 🔥
-  const code = document.getElementById("adminCode").value.trim();
+  console.log("LOGIN PAGE VERSION 2026"); // debug
 
-  const code = document.getElementById("adminCode").value.trim();
-  if(!code) return;
+  const adminCode = document.getElementById("adminCode").value.trim();
+  if(!adminCode) return;
 
-  const res = await fetch(
-    `${API}?action=adminLogin&code=${encodeURIComponent(code)}`
-  );
-  const data = await res.json();
+  try{
+    const res = await fetch(
+      `${API}?action=adminLogin&code=${encodeURIComponent(adminCode)}`
+    );
+    const data = await res.json();
 
-  if(data.ok){
-  sessionStorage.setItem("adminLogged","1");
-  sessionStorage.setItem("adminToken", data.adminToken);
+    if(data.ok){
+      sessionStorage.setItem("adminLogged","1");
+      sessionStorage.setItem("adminToken", data.adminToken);
 
-  console.log("AFTER SET:");
-  console.log("adminLogged =", sessionStorage.getItem("adminLogged"));
-  console.log("adminToken =", sessionStorage.getItem("adminToken"));
+      console.log("AFTER SET:");
+      console.log("adminLogged =", sessionStorage.getItem("adminLogged"));
+      console.log("adminToken =", sessionStorage.getItem("adminToken"));
 
-  // TEMPORARILY stop redirect
-  // window.location.href = "admin-options.html";
-}
-else{
-    document.getElementById("error").style.display="block";
+      // ✅ आता redirect safe आहे
+      window.location.href = "admin-options.html";
+
+    }else{
+      document.getElementById("error").style.display="block";
+    }
+
+  }catch(err){
+    console.error("Login error:", err);
+    alert("❌ Server error");
   }
 }
 </script>
