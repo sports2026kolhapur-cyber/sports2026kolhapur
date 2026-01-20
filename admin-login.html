@@ -73,6 +73,10 @@ button{
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
 async function login(){
+  async function login(){
+  console.log("LOGIN PAGE VERSION 2026"); // 🔥
+  const code = document.getElementById("adminCode").value.trim();
+
   const code = document.getElementById("adminCode").value.trim();
   if(!code) return;
 
