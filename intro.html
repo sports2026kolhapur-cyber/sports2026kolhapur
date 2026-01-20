@@ -36,8 +36,15 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* 🎥 subtle premium zoom */
+  animation: bgZoom 18s ease-in-out infinite alternate;
 }
 
+@keyframes bgZoom{
+  from{ background-size:100%; }
+  to{ background-size:110%; }
+}
 .welcome-box{
   background: rgba(0,0,0,0.35);
   padding:48px 56px;
