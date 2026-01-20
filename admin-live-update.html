@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>Admin – Live Updates</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  padding:16px;
+  background:#f1f5f9;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+}
+.container{max-width:720px;margin:auto;}
+.card{
+  background:#fff;
+  padding:24px;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+h1{text-align:center;color:#1e40af;}
+textarea{
+  width:100%;
+  min-height:80px;
+  padding:12px;
+  border-radius:10px;
+  border:1.8px solid #cbd5e1;
+}
+button{
+  width:100%;
+  margin-top:16px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#c2410c;
+  color:#fff;
+  font-weight:800;
+}
+.logout{background:#7c2d12;}
+table{width:100%;margin-top:20px;border-collapse:collapse;}
+th,td{border:1px solid #cbd5e1;padding:8px;text-align:center;}
+th{background:#e5e7eb;}
+</style>
+</head>
+
+<body>
+<div class="container">
+<div class="card">
+
+<h1>📢 Live Updates (Admin)</h1>
+
+<textarea id="msg" placeholder="Live message टाका"></textarea>
+
+<button onclick="add()">Live Update Add करा</button>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="body"></tbody>
+</table>
+
+</div>
+</div>
+
+<script>
+const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+const ADMIN_TOKEN=sessionStorage.getItem("adminToken");
+
+/* 🔐 guards */
+if(sessionStorage.getItem("adminLogged")!=="1" || !ADMIN_TOKEN){
+  location.href="admin-login.html";
+}
+
+async function add(){
+  const msg=document.getElementById("msg").value.trim();
+  if(!msg) return;
+
+  await fetch(
+    `${API}?action=addLiveUpdate`+
+    `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`+
+    `&msg=${encodeURIComponent(msg)}`
+  );
+
+  document.getElementById("msg").value="";
+  load();
+}
+
+async function load(){
+  const res=await fetch(
+    `${API}?action=adminLiveList&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`
+  );
+  const list=await res.json();
+
+  const body=document.getElementById("body");
+  body.innerHTML="";
+  list.forEach(u=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${u.msg}</td>
+      <td>
+        <button onclick="del('${u.id}')">🗑️</button>
+      </td>`;
+    body.appendChild(tr);
+  });
+}
+
+async function del(id){
+  await fetch(
+    `${API}?action=deleteLiveUpdate`+
+    `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`+
+    `&id=${encodeURIComponent(id)}`
+  );
+  load();
+}
+
+function logout(){
+  sessionStorage.removeItem("adminLogged");
+  sessionStorage.removeItem("adminToken");
+  location.href="dashboard.html";
+}
+
+window.addEventListener("DOMContentLoaded",load);
+</script>
+</body>
+</html>
