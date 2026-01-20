@@ -82,11 +82,9 @@ async function login(){
   const data = await res.json();
 
   if(data.ok){
-    // ✅ ADMIN SESSION
-    sessionStorage.setItem("isAdmin","1");
-   sessionStorage.setItem("adminToken","MECH2026_ADMIN_SECURE");
+    sessionStorage.setItem("adminLogged","1");
+    sessionStorage.setItem("adminToken", data.adminToken);
 
-    // ✅ GO TO OPTIONS (NOT DIRECT ADMIN PAGE)
     window.location.href = "admin-options.html";
   }else{
     document.getElementById("error").style.display="block";
