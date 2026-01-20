@@ -101,7 +101,9 @@ body{
 
 <!-- 🔐 ADMIN CHECK (MUST) -->
 <script>
-if (sessionStorage.getItem("isAdmin") !== "1") {
+const token = sessionStorage.getItem("adminToken");
+
+if (!token) {
   alert("⛔ Unauthorized access");
   location.href = "dashboard.html";
 }
