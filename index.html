@@ -386,6 +386,17 @@ if (sessionStorage.getItem("regAccess") !== "1") {
            data-msg-pattern="कृपया खेळाडू २ साठी १० अंकी मोबाईल क्रमांक भरा.">
   </div>
 </div>
+<p style="
+  background:#eff6ff;
+  padding:10px;
+  border-left:4px solid #1e40af;
+  border-radius:6px;
+  font-weight:600;
+  margin-bottom:12px;
+">
+  ℹ️ सूचना: संघातील खेळाडूंची संख्या ही जास्तीत जास्त मर्यादेपर्यंत भरता येईल.
+  किमान कॅप्टनची नोंद आवश्यक आहे.
+</p>
 
 <!-- ================= TEAM (Sports) ================= -->
 <div id="teamSection" class="section hidden">
@@ -1233,7 +1244,7 @@ function addCulturalPlayer(){
 // ================= SUBMIT (Google Sheet) =================
 async function submitForm(e) {
   e.preventDefault();
-// ================= TEAM SPORTS – EXACT PLAYER COUNT =================
+/* // ================= TEAM SPORTS – EXACT PLAYER COUNT =================
 if (
   eventType.value === "sports" &&
   sportType.value === "team"
@@ -1256,7 +1267,9 @@ if (
     );
     return false;
   }
-}
+} */
+  
+
 // ================= TEAM SPORTS – EMPTY PLAYER CHECK =================
 if (
   eventType.value === "sports" &&
@@ -1281,15 +1294,6 @@ if (
   // ✅ ADD START
   if (!validateMarathiFieldsBeforeSubmit()) {
     sportsForm.reportValidity();
-    return false;
-  }
-// ✅ FINAL ADD – Sports team
-  if (
-    eventType.value === "sports" &&
-    sportType.value === "team" &&
-    document.querySelectorAll("#playersList .playerRow").length === 0
-  ) {
-    alert("⚠️ सांघिक खेळासाठी किमान एक खेळाडू जोडा.");
     return false;
   }
 
