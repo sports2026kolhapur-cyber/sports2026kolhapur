@@ -70,7 +70,7 @@ button{
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec"; // Apps Script Web App URL
+const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
 async function login(){
   const code = document.getElementById("adminCode").value.trim();
@@ -82,8 +82,12 @@ async function login(){
   const data = await res.json();
 
   if(data.ok){
-    sessionStorage.setItem("adminLogged","1");
-    window.location.href = "admin-nikal.html";
+    // ✅ ADMIN SESSION
+    sessionStorage.setItem("isAdmin","1");
+   sessionStorage.setItem("adminToken","MECH2026_ADMIN_SECURE");
+
+    // ✅ GO TO OPTIONS (NOT DIRECT ADMIN PAGE)
+    window.location.href = "admin-options.html";
   }else{
     document.getElementById("error").style.display="block";
   }
