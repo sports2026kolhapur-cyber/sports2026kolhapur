@@ -1310,9 +1310,10 @@ if (
   const rows = document.querySelectorAll("#culturalPlayers .playerRow");
 
   for (let row of rows) {
-    const inputs = querySelectorAll(
-  "input[type='text'], input[type='date'], input[type='tel'], select"
-);
+    const inputs = row.querySelectorAll(
+      "input[type='text'], input[type='date'], input[type='tel'], select"
+    );
+
     for (let inp of inputs) {
       if (!inp.value.trim()) {
         alert("⚠️ कृपया सर्व कलाकारांची माहिती पूर्ण भरा.");
