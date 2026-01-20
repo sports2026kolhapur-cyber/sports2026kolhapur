@@ -846,30 +846,26 @@ function detectDuplicateParticipants(participants){
   const seen = new Set();
 
   for(const p of participants){
-    const key =
-      (norm(p.firstName) + "|" +
-       norm(p.middleName) + "|" +
-       norm(p.lastName)).toLowerCase();
+    const key = (p.mobile || "").replace(/\D/g,"");
+    if(!key) continue;
 
     if(seen.has(key)){
-      return true; // ❌ duplicate name found
+      return true; // ❌ duplicate mobile
     }
     seen.add(key);
   }
-  return false; // ✅ all names unique
+  return false; // ✅ all unique
 }
 
 function getPlayerFromRow(row){
-  const inputs = row.querySelectorAll("input");
-
   return {
-    firstName: norm(inputs[0]?.value),
-    middleName: norm(inputs[1]?.value),
-    lastName: norm(inputs[2]?.value),
-    arrivalDate: inputs[3]?.value || "",
+    firstName: norm(row.querySelector("input[name$='FirstName[]']")?.value),
+    middleName: norm(row.querySelector("input[name$='MiddleName[]']")?.value),
+    lastName: norm(row.querySelector("input[name$='LastName[]']")?.value),
+    arrivalDate: row.querySelector("input[type='date']")?.value || "",
     gender: row.querySelector(".genderField, .cGenderField")?.value || "",
     designation: row.querySelector(".designationField, .cPadnaamField")?.value || "",
-    mobile: norm(inputs[4]?.value) // ✅ STEP 2 ADD
+    mobile: norm(row.querySelector("input[type='tel']")?.value)
   };
 }
 function validateMarathiFieldsBeforeSubmit(){
@@ -1270,7 +1266,7 @@ if (
 
   for (let row of rows) {
     const inputs = row.querySelectorAll(
-  "input[type='text'], input[type='date'], select"
+  "input[type='text'], input[type='date'], input[type='tel'], select"
 );
     for (let inp of inputs) {
       if (!inp.value.trim()) {
@@ -1314,10 +1310,9 @@ if (
   const rows = document.querySelectorAll("#culturalPlayers .playerRow");
 
   for (let row of rows) {
-    const inputs = row.querySelectorAll(
-  "input[type='text'], input[type='date'], select"
+    const inputs = querySelectorAll(
+  "input[type='text'], input[type='date'], input[type='tel'], select"
 );
-
     for (let inp of inputs) {
       if (!inp.value.trim()) {
         alert("⚠️ कृपया सर्व कलाकारांची माहिती पूर्ण भरा.");
