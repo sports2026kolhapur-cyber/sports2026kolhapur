@@ -868,7 +868,7 @@ function getPlayerFromRow(row){
     lastName: norm(inputs[2]?.value),
     arrivalDate: inputs[3]?.value || "",
     gender: row.querySelector(".genderField, .cGenderField")?.value || "",
-    designation: row.querySelector(".designationField, .cPadnaamField")?.value || ""
+    designation: row.querySelector(".designationField, .cPadnaamField")?.value || "",
     mobile: norm(inputs[4]?.value) // ✅ STEP 2 ADD
   };
 }
