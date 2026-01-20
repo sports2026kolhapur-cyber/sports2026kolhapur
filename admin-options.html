@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Options</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --primary:#1e40af;
+  --success:#16a34a;
+  --info:#0ea5e9;
+  --warn:#c2410c;
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#1f2937;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+  background:var(--bg);
+  padding:16px;
+  color:var(--text);
+}
+
+.container{
+  max-width:700px;
+  margin:auto;
+}
+
+/* Header */
+.header{
+  background:var(--primary);
+  color:#fff;
+  padding:22px;
+  border-radius:16px;
+  text-align:center;
+}
+
+.header h1{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+}
+
+.header p{
+  margin-top:6px;
+  font-size:15px;
+  font-weight:600;
+  opacity:.95;
+}
+
+/* Card */
+.card{
+  margin-top:26px;
+  background:var(--card);
+  padding:26px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Buttons */
+.btn{
+  display:block;
+  width:100%;
+  padding:16px;
+  margin-top:16px;
+  border:none;
+  border-radius:14px;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+  color:#fff;
+  text-align:center;
+}
+
+.btn-nikal{background:var(--success);}
+.btn-vela{background:var(--info);}
+.btn-live{background:var(--warn);}
+
+.btn:hover{opacity:.92;}
+
+/* Back */
+.back-btn{
+  margin-top:26px;
+  display:block;
+  text-align:center;
+  text-decoration:none;
+  font-weight:800;
+  color:var(--primary);
+}
+</style>
+  <style>
+.btn-logout{ background:#475569; }
+</style>
+
+</head>
+
+<!-- 🔐 ADMIN CHECK (MUST) -->
+<script>
+if (sessionStorage.getItem("isAdmin") !== "1") {
+  alert("⛔ Unauthorized access");
+  location.href = "dashboard.html";
+}
+</script>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>🔐 Admin Control Panel</h1>
+    <p>कृपया खालीलपैकी आवश्यक पर्याय निवडा</p>
+  </div>
+
+  <div class="card">
+
+    <!-- 1️⃣ NIKAL UPDATE -->
+    <button class="btn btn-nikal"
+      onclick="location.href='admin-nikal.html'">
+      🏆 क्रीडा व सांस्कृतिक कार्यक्रमांचे निकाल अपडेट करा
+    </button>
+
+    <!-- 2️⃣ VELAPATRAK UPDATE -->
+    <button class="btn btn-vela"
+      onclick="location.href='admin-velapatrak.html'">
+      📅 क्रीडा व सांस्कृतिक कार्यक्रमांचे वेळापत्रक अपडेट करा
+    </button>
+
+    <!-- 3️⃣ LIVE UPDATE -->
+    <button class="btn btn-live"
+      onclick="location.href='admin-live-update.html'">
+      📢 वापरकर्त्यांना Live Update पाठवा
+    </button>
+    
+
+<button class="btn btn-logout" onclick="logoutAdmin()">
+  🚪 Logout
+</button>
+
+
+    <!-- Back -->
+    <a class="back-btn" href="dashboard.html">
+      ⬅️ Dashboard वर परत जा
+    </a>
+
+  </div>
+
+</div>
+
+</body>
+  <script>
+function logoutAdmin(){
+  sessionStorage.removeItem("isAdmin");
+  location.href = "dashboard.html";
+}
+</script>
+
+</html>
