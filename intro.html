@@ -26,13 +26,14 @@ body{
 #welcomeScreen{
   position:fixed;
   inset:0;
+  #welcomeScreen{
   background:
     linear-gradient(
       rgba(0,0,0,0.20),
       rgba(0,0,0,0.45)
     ),
-    url("https://cdnbbsr.s3waas.gov.in/s37cac11e2f46ed46c339ec3d569853759/uploads/bfi_thumb/20250218692577894-scaled-r1oerplkbmcnpcd6aly0icgmwboje1upkapq8gyqcg.jpg")
-    center / cover no-repeat;
+    url("https://cdnbbsr.s3waas.gov.in/s37cac11e2f46ed46c339ec3d569853759/uploads/bfi_thumb/20250218692577894-scaled-r1oerplkbmcnpcd6aly0icgmwboje1upkapq8gyqcg.jpg") 35% center / cover no-repeat;
+}
   z-index:9999;
   display:flex;
   align-items:center;
@@ -172,7 +173,37 @@ body{
       onclick="location.href='admin-login.html'">
       🔐 Admin Login
     </button>
+<!-- 🔔 LIVE UPDATES (INTRO PAGE ONLY) -->
+<div id="liveWrap" style="
+  display:none;
+  margin-top:18px;
+  padding:14px;
+  border-radius:12px;
+  background:#fff7ed;
+  border:2px solid #fb923c;
+  overflow:hidden;
+">
 
+  <div id="liveText" style="
+    white-space:nowrap;
+    font-weight:800;
+    color:#7c2d12;
+    animation: scrollLeft 18s linear infinite;
+  ">
+  </div>
+
+</div>
+
+<audio id="liveSound">
+  <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg">
+</audio>
+
+<style>
+@keyframes scrollLeft{
+  from{transform:translateX(100%);}
+  to{transform:translateX(-100%);}
+}
+</style>
   </div>
 </div>
 </div>
@@ -184,6 +215,9 @@ window.addEventListener("load", ()=>{
   if (sessionStorage.getItem("welcomeDone") === "1") {
     document.getElementById("welcomeScreen").style.display = "none";
     document.getElementById("introContent").style.display = "block";
+    // ✅ START LIVE UPDATES (repeat visit)
+  loadLiveUpdates();
+  setInterval(loadLiveUpdates, 15000);
     return;
   }
 
@@ -197,10 +231,53 @@ window.addEventListener("load", ()=>{
 
       // ✅ mark welcome done
       sessionStorage.setItem("welcomeDone","1");
+      // ✅ START LIVE UPDATES HERE
+  loadLiveUpdates();
+  setInterval(loadLiveUpdates, 15000);
     },600);
 
   },3000); // ⏱️ 3 seconds
 });
 </script>
+<script>
+const LIVE_API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
+let lastLiveMsg = "";
+
+function playLiveSound(){
+  const a = document.getElementById("liveSound");
+  if(a){
+    a.currentTime = 0;
+    a.play().catch(()=>{});
+  }
+}
+
+async function loadLiveUpdates(){
+  try{
+    const res = await fetch(LIVE_API + "?action=liveUpdates");
+    const d = await res.json();
+
+    if(!d.ok || !d.updates || d.updates.length === 0){
+      document.getElementById("liveWrap").style.display = "none";
+      return;
+    }
+
+    const msg = d.updates
+      .map(u => "📢 " + u.msg)
+      .join("   •••   ");
+
+    if(msg !== lastLiveMsg){
+      playLiveSound(); // 🔔 only when new update
+      lastLiveMsg = msg;
+    }
+
+    document.getElementById("liveText").textContent = msg;
+    document.getElementById("liveWrap").style.display = "block";
+
+  }catch(e){
+    console.log("Live update error", e);
+  }
+}
+
+</script>
 </html>
