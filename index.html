@@ -869,6 +869,7 @@ function getPlayerFromRow(row){
     arrivalDate: inputs[3]?.value || "",
     gender: row.querySelector(".genderField, .cGenderField")?.value || "",
     designation: row.querySelector(".designationField, .cPadnaamField")?.value || ""
+    mobile: norm(inputs[4]?.value) // ✅ STEP 2 ADD
   };
 }
 function validateMarathiFieldsBeforeSubmit(){
@@ -1082,6 +1083,14 @@ function addPlayer(){
   <option value="वाहनचालक">वाहनचालक</option>
       <option value="इतर">इतर</option>
     </select>
+    <input
+  type="tel"
+  name="playerMobile[]"
+  placeholder="खेळाडू मोबाईल"
+  pattern="[0-9]{10}"
+  required
+  title="१० अंकी मोबाईल आवश्यक आहे"
+>
     <button type="button" class="remove-btn" onclick="removePlayer(this)">×</button>
   `;
   document.getElementById("playersList").appendChild(row);
@@ -1212,6 +1221,13 @@ function addCulturalPlayer(){
   <option value="वाहनचालक">वाहनचालक</option>
       <option value="इतर">इतर</option>
     </select>
+    <input
+  type="tel"
+  name="cMobile[]"
+  placeholder="कलाकार मोबाईल"
+  pattern="[0-9]{10}"
+  required
+>
     <button type="button" class="remove-btn" onclick="this.parentElement.remove()">×</button>
   `;
   document.getElementById("culturalPlayers").appendChild(row);
@@ -1445,7 +1461,7 @@ designation: document.getElementById("captainPadnaam").value,
 
       const players = Array.from(document.querySelectorAll("#playersList .playerRow")).map(r=>{
         const p = getPlayerFromRow(r);
-        return {role:"player", ...p, mobile:""};
+        return { role:"player", ...p };
       });
 const all = [captain, ...players]; // ✅ DEFINE
 
@@ -1538,7 +1554,7 @@ designation: document.getElementById("cCaptainPadnaam").value,
 
       const artists = Array.from(document.querySelectorAll("#culturalPlayers .playerRow")).map(r=>{
         const p = getPlayerFromRow(r);
-        return {role:"artist", ...p, mobile:""};
+        return { role:"player", ...p };
       });
 const all = [captain, ...artists];
       if (detectDuplicateParticipants(all)) {
