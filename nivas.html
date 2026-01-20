@@ -133,22 +133,20 @@ a.map{
 
   <!-- Error -->
   <div id="error" class="error">
-  <div id="errorMsg">❌ निवास माहिती उपलब्ध नाही</div>
+    <div id="errorMsg">❌ निवास माहिती उपलब्ध नाही</div>
 
-  <div class="contact">
-    <div><b>संपर्क – आयोजक</b></div>
-
-    <div style="margin-top:8px;">
-      👤 श्रीमती. एस. बी. नरके. (सहा. अभियंता, श्रे-२) <br>
-      📞 <a href="tel:9096620850">9096620850</a>
-    </div>
-
-    <div style="margin-top:10px;">
-      👤 श्री. प्रतिक आगवणे (सहा. अभियंता, श्रे-२) <br>
-      📞 <a href="tel:7249247831">7249247831</a>
+    <div class="contact">
+      <div><b>संपर्क – आयोजक</b></div>
+      <div style="margin-top:8px;">
+        👤 श्रीमती. एस. बी. नरके. (सहा. अभियंता, श्रे-२) <br>
+        📞 <a href="tel:9096620850">9096620850</a>
+      </div>
+      <div style="margin-top:10px;">
+        👤 श्री. प्रतिक आगवणे (सहा. अभियंता, श्रे-२) <br>
+        📞 <a href="tel:7249247831">7249247831</a>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- Info -->
   <div id="info" class="info">
@@ -158,8 +156,16 @@ a.map{
     <p><b>खोली / ब्लॉक:</b> <span id="room"></span></p>
     <a id="map" class="map" target="_blank">📍 Google Map उघडा</a>
   </div>
-</div>
 
+  <!-- Participation Info -->
+  <div id="participation" class="info" style="display:none;">
+    <h3 style="margin-top:18px;color:#1e40af;">🏅 सहभाग माहिती</h3>
+    <div id="sportsBox" style="margin-top:10px;"></div>
+    <div id="culturalBox" style="margin-top:14px;"></div>
+  </div>
+
+</div> <!-- ✅ card close -->
+  
 <script>
 const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
@@ -177,12 +183,15 @@ const office   = document.getElementById("office");
 const stay     = document.getElementById("stay");
 const room     = document.getElementById("room");
 const map      = document.getElementById("map");
+const participation = document.getElementById("participation");
+const sportsBox = document.getElementById("sportsBox");
+const culturalBox = document.getElementById("culturalBox");
 
 async function check(){
   const mob = mobile.value.trim();
-
-  info.style.display="none";
-  error.style.display="none";
+info.style.display = "none";
+participation.style.display = "none";
+error.style.display = "none";
 
   if(!/^\d{10}$/.test(mob)){
     errorMsg.textContent="❌ कृपया 10 अंकी मोबाईल नंबर टाका";
@@ -201,11 +210,36 @@ async function check(){
     btn.disabled=false;
 
     if(!d.ok){
-      errorMsg.textContent="❌ निवास माहिती उपलब्ध नाही";
-      error.style.display="block";
-      return;
-    }
+  participation.style.display = "none";
+  errorMsg.textContent="❌ निवास माहिती उपलब्ध नाही";
+  error.style.display="block";
+  return;
+}
+participation.style.display = "block";
 
+// ---------- SPORTS ----------
+if (d.sports && d.sports.length > 0) {
+  sportsBox.innerHTML =
+    "<b>🏏 क्रीडा सहभाग:</b><ul>" +
+    d.sports
+      .map(s => `<li>${s.program} (${s.type})</li>`)
+      .join("") +
+    "</ul>";
+} else {
+  sportsBox.innerHTML = "<b>🏏 क्रीडा सहभाग:</b> नाही";
+}
+
+// ---------- CULTURAL ----------
+if (d.cultural && d.cultural.length > 0) {
+  culturalBox.innerHTML =
+    "<b>🎭 सांस्कृतिक सहभाग:</b><ul>" +
+    d.cultural
+      .map(c => `<li>${c.program} (${c.type})</li>`)
+      .join("") +
+    "</ul>";
+} else {
+  culturalBox.innerHTML = "<b>🎭 सांस्कृतिक सहभाग:</b> नाही";
+}
     info.style.display="block";
     name.textContent = d.name || "-";
     office.textContent = d.office || "-";
