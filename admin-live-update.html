@@ -28,18 +28,29 @@ textarea{
   border:1.8px solid #cbd5e1;
 }
 button{
-  width:100%;
-  margin-top:16px;
-  padding:14px;
+  padding:10px 14px;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   background:#c2410c;
   color:#fff;
-  font-weight:800;
+  font-weight:700;
+  cursor:pointer;
 }
-.logout{background:#7c2d12;}
-table{width:100%;margin-top:20px;border-collapse:collapse;}
-th,td{border:1px solid #cbd5e1;padding:8px;text-align:center;}
+.logout{
+  width:100%;
+  margin-top:16px;
+  background:#7c2d12;
+}
+table{
+  width:100%;
+  margin-top:20px;
+  border-collapse:collapse;
+}
+th,td{
+  border:1px solid #cbd5e1;
+  padding:8px;
+  text-align:center;
+}
 th{background:#e5e7eb;}
 </style>
 </head>
@@ -52,7 +63,7 @@ th{background:#e5e7eb;}
 
 <textarea id="msg" placeholder="Live message टाका"></textarea>
 
-<button onclick="add()">Live Update Add करा</button>
+<button style="width:100%;margin-top:16px" onclick="add()">Live Update Add करा</button>
 
 <button class="logout" onclick="logout()">Logout</button>
 
@@ -60,6 +71,7 @@ th{background:#e5e7eb;}
 <thead>
 <tr>
 <th>Message</th>
+<th>Status</th>
 <th>Action</th>
 </tr>
 </thead>
@@ -73,7 +85,7 @@ th{background:#e5e7eb;}
 const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 const ADMIN_TOKEN=sessionStorage.getItem("adminToken");
 
-/* 🔐 guards */
+/* 🔐 guard */
 if(sessionStorage.getItem("adminLogged")!=="1" || !ADMIN_TOKEN){
   location.href="admin-login.html";
 }
@@ -94,28 +106,44 @@ async function add(){
 
 async function load(){
   const res=await fetch(
-    `${API}?action=adminLiveList&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`
+    `${API}?action=adminLiveUpdates&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`
   );
   const list=await res.json();
 
   const body=document.getElementById("body");
   body.innerHTML="";
+
   list.forEach(u=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td>${u.msg}</td>
       <td>
-        <button onclick="del('${u.id}')">🗑️</button>
-      </td>`;
+        <button onclick="toggle(${u.row}, '${u.active==="YES"?"NO":"YES"}')">
+          ${u.active==="YES" ? "🟢 ON" : "🔴 OFF"}
+        </button>
+      </td>
+      <td>
+        <button onclick="del(${u.row})">🗑️</button>
+      </td>
+    `;
     body.appendChild(tr);
   });
 }
 
-async function del(id){
+async function del(row){
   await fetch(
     `${API}?action=deleteLiveUpdate`+
     `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`+
-    `&id=${encodeURIComponent(id)}`
+    `&row=${row}`
+  );
+  load();
+}
+
+async function toggle(row,val){
+  await fetch(
+    `${API}?action=toggleLiveUpdate`+
+    `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`+
+    `&row=${row}&value=${val}`
   );
   load();
 }
