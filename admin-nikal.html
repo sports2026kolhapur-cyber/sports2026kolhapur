@@ -162,6 +162,8 @@ th{background:#e5e7eb;}
 
 <script>
 const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+  
+const ADMIN_TOKEN = sessionStorage.getItem("adminToken");
 
 /* 🔐 login guard */
 if(sessionStorage.getItem("adminLogged")!=="1"){
@@ -179,6 +181,10 @@ const successEl  = document.getElementById("success");
 const resultBody = document.getElementById("resultBody");
 
 let editRow = null;
+if (!ADMIN_TOKEN) {
+  alert("⛔ Admin session expired");
+  location.href = "admin-login.html";
+}
 
 /* 🔁 load programs from माहिती sheet */
 mainEl.addEventListener("change", loadPrograms);
@@ -191,11 +197,12 @@ async function loadPrograms(){
 
   try{
     const res = await fetch(
-      `${API}?action=adminPrograms` +
-      `&main=${encodeURIComponent(mainEl.value.trim())}` +
-      `&type=${encodeURIComponent(typeEl.value.trim())}` +
-      `&t=${Date.now()}`
-    );
+  `${API}?action=adminPrograms` +
+  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+  `&main=${encodeURIComponent(mainEl.value.trim())}` +
+  `&type=${encodeURIComponent(typeEl.value.trim())}` +
+  `&t=${Date.now()}`
+);
 
     const list = await res.json();
 
@@ -235,19 +242,25 @@ async function save(){
   }
 
   if(editRow){
-    await fetch(`${API}?action=deleteResult&row=${editRow}`);
+    await fetch(
+  `${API}?action=deleteResult` +
+  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+  `&row=${editRow}`
+);
+
     editRow=null;
   }
 
   const params=new URLSearchParams({
-    action:"saveResult",
-    main:mainEl.value,
-    type:typeEl.value,
-    program:programEl.value,
-    position:positionEl.value,
-    name:nameEl.value,
-    office:officeEl.value
-  });
+  action:"saveResult",
+  adminToken: ADMIN_TOKEN,   // 🔐 MUST
+  main:mainEl.value,
+  type:typeEl.value,
+  program:programEl.value,
+  position:positionEl.value,
+  name:nameEl.value,
+  office:officeEl.value
+});
 
   await fetch(`${API}?${params.toString()}`);
   successEl.style.display="block";
@@ -257,7 +270,10 @@ async function save(){
 
 /* 📋 load results */
 async function loadResults(){
-  const res=await fetch(`${API}?action=adminResultList`);
+ const res = await fetch(
+  `${API}?action=adminResultList` +
+  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`
+);
   const list=await res.json();
 
   resultBody.innerHTML="";
@@ -292,7 +308,12 @@ function editResult(r){
 /* 🗑️ delete */
 async function deleteResult(row){
   if(!confirm("हा निकाल delete करायचा आहे का?")) return;
-  await fetch(`${API}?action=deleteResult&row=${row}`);
+  await fetch(
+  `${API}?action=deleteResult` +
+  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+  `&row=${row}`
+);
+
   loadResults();
 }
 
@@ -306,7 +327,9 @@ function clearForm(){
   officeEl.value="";
 }
 function logout(){
-  sessionStorage.removeItem("adminLogged");
+ sessionStorage.removeItem("adminLogged");
+sessionStorage.removeItem("adminToken");
+
   location.href="dashboard.html";
 }
 
