@@ -100,10 +100,9 @@ const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0
 
 
 // program dropdown auto load
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("main").addEventListener("change", loadPrograms);
-  document.getElementById("type").addEventListener("change", loadPrograms);
-});
+document.getElementById("main").addEventListener("change", loadPrograms);
+document.getElementById("type").addEventListener("change", loadPrograms);
+
 async function loadPrograms(){
 
   const main = document.getElementById("main").value;
