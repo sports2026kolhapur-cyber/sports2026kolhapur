@@ -74,7 +74,9 @@ button{
     <option value="team">सांघिक</option>
   </select>
 
-  <input id="program" placeholder="खेळ / कार्यक्रम नाव">
+  <select id="program" disabled>
+  <option value="">खेळ / कार्यक्रम निवडा</option>
+</select>
 
   <input id="round" placeholder="फेरी (उदा. उपांत्य फेरी)">
 
@@ -103,7 +105,48 @@ if(!adminToken){
   alert("Admin login करा आधी");
   window.location.href = "admin-login.html";
 }
+// program dropdown auto load
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("main").addEventListener("change", loadPrograms);
+  document.getElementById("type").addEventListener("change", loadPrograms);
+});
+async function loadPrograms(){
 
+  const main = document.getElementById("main").value;
+  const type = document.getElementById("type").value;
+  const prog = document.getElementById("program");
+
+  prog.innerHTML = '<option>लोड होत आहे...</option>';
+  prog.disabled = true;
+
+  if(!main || !type){
+    prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
+    return;
+  }
+
+  const res = await fetch(
+    `${API}?action=adminPrograms&main=${main}&type=${type}&adminToken=${adminToken}`
+  );
+
+  const list = await res.json();
+
+prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
+
+if(list.length === 0){
+  prog.innerHTML = '<option value="">या प्रकारासाठी नोंदणी नाही</option>';
+  prog.disabled = true;
+  return;
+}
+
+  list.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p;
+    opt.textContent = p;
+    prog.appendChild(opt);
+  });
+
+  prog.disabled = false;
+}
 async function saveVelapatrak(){
 
   const msg = document.getElementById("msg");
@@ -128,8 +171,8 @@ async function saveVelapatrak(){
     const res = await fetch(
       `${API}?action=addVelapatrak`+
       `&adminToken=${adminToken}`+
-      `&main=${main}`+
-      `&type=${type}`+
+     `&main=${encodeURIComponent(main)}`+
+`&type=${encodeURIComponent(type)}`+
       `&program=${encodeURIComponent(program)}`+
       `&round=${encodeURIComponent(round)}`+
       `&teamA=${encodeURIComponent(teamA)}`+
@@ -142,14 +185,23 @@ async function saveVelapatrak(){
     const data = await res.json();
 
     if(data.ok){
+      document.getElementById("program").innerHTML =
+  '<option value="">खेळ / कार्यक्रम निवडा</option>';
+document.getElementById("program").disabled = true;
+
+document.getElementById("main").value = "";
+document.getElementById("type").value = "";
+
       msg.style.color="green";
       msg.innerHTML = "✅ वेळापत्रक यशस्वीरीत्या जतन झाले";
 
       document.querySelectorAll("input").forEach(i=>i.value="");
     }else{
-      msg.style.color="red";
-      msg.innerHTML = "Unauthorized / Error";
-    }
+  msg.style.color="red";
+  msg.innerHTML = "Session expired. पुन्हा login करा.";
+  localStorage.removeItem("adminToken");
+  setTimeout(()=>window.location.href="admin-login.html",1500);
+}
 
   }catch(e){
     msg.style.color="red";
