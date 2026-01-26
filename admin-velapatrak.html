@@ -99,10 +99,11 @@ button{
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
 // 🛡️ adminToken localStorage मधून
-const adminToken = localStorage.getItem("adminToken");
+const params = new URLSearchParams(window.location.search);
+const adminToken = params.get("token");
 
 if(!adminToken){
-  alert("Admin login करा आधी");
+  alert("Session expired. पुन्हा login करा.");
   window.location.href = "admin-login.html";
 }
 // program dropdown auto load
