@@ -163,18 +163,10 @@ if (sessionStorage.getItem("regAccess") !== "1") {
 <div class="section">
   <div class="section-title">कार्यालयाची माहिती</div>
 
-  <label>आपण कोणत्या मंडळ कार्यालयात कार्यरत आहात?</label>
-  <select id="mandalOffice" name="mandalOffice" required
-          title="मंडळ कार्यालय निवडा"
-          data-msg-required="कृपया मंडळ कार्यालय निवडा.">
-    <option value="">— मंडळ कार्यालय निवडा —</option>
-    <option value="Kolhapur">यांत्रिकी मंडळ, कोल्हापूर</option>
-    <option value="Pune">यांत्रिकी मंडळ, पुणे</option>
-    <option value="Nashik">यांत्रिकी मंडळ, नाशिक</option>
-    <option value="Nanded">यांत्रिकी मंडळ, नांदेड</option>
-    <option value="Nagpur">यांत्रिकी मंडळ, नागपूर</option>
-<option value="WRD_Pune_RD">पाटबंधारे संशोधन व विकास संचालनालय, पुणे</option>
-  </select>
+  <label>आपण कोणत्या कार्यालयात कार्यरत आहात?</label>
+  <select id="mandalOffice" name="mandalOffice" required>
+  <option value="">कार्यालयांची यादी लोड होत आहे...</option>
+</select>
 </div>
 
 <!-- ================= स्पर्धेचा प्रकार ================= -->
@@ -1388,7 +1380,27 @@ else {
   submitBtn.textContent = "नोंदणी सबमिट करा";
   return false;
 }
+async function loadOffices() {
+  const sel = document.getElementById("mandalOffice");
 
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL + "?action=offices");
+    const list = await res.json();
+
+    sel.innerHTML = '<option value="">— कार्यालय निवडा —</option>';
+
+    list.forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+
+  } catch (err) {
+    sel.innerHTML = '<option value="">कार्यालये लोड झाली नाहीत</option>';
+    console.error("Office load error", err);
+  }
+}
 function buildPayload(){
   const mandalOffice = document.getElementById("mandalOffice").value;
   const type = eventType.value;
@@ -1587,8 +1599,11 @@ return {
 
 window.addEventListener("load", ()=>{
 
+  loadOffices();   
+
   attachMarathiGuards();
   applyMarathiValidation();
+
   
 // ✅ SHOW MAIN FORM (since regAgreed removed)
 document.getElementById("mainForm").classList.remove("hidden");
