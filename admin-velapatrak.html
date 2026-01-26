@@ -118,18 +118,12 @@ async function loadPrograms(){
   }
 
   const res = await fetch(
-    `${API}?action=adminPrograms&main=${encodeURIComponent(main)}&type=${encodeURIComponent(type)}`
+    `${API}?action=velapatrakPrograms&main=${encodeURIComponent(main)}&type=${encodeURIComponent(type)}`
   );
 
   const list = await res.json();
 
-prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
-
-if(list.length === 0){
-  prog.innerHTML = '<option value="">या प्रकारासाठी नोंदणी नाही</option>';
-  prog.disabled = true;
-  return;
-}
+  prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
 
   list.forEach(p=>{
     const opt = document.createElement("option");
@@ -140,6 +134,7 @@ if(list.length === 0){
 
   prog.disabled = false;
 }
+
 async function saveVelapatrak(){
 
   const msg = document.getElementById("msg");
