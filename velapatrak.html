@@ -11,32 +11,25 @@ body{
   font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
   background:#f1f5f9;
   padding:20px;
-  padding-bottom:90px;   /* ⬅️ हे ADD करा */
+  padding-bottom:90px;
   color:#1f2937;
 }
-/* Back Button */
+
 .back-btn{
   position: fixed;
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 999;
-
   background:#1e40af;
   color:#ffffff;
   padding:12px 22px;
   border-radius:14px;
   font-weight:700;
   text-decoration:none;
-
   box-shadow:0 8px 20px rgba(0,0,0,0.3);
-  white-space: nowrap;
-}
-.back-btn:hover{
-  background:#1d4ed8;
 }
 
-/* Content */
 .container{
   max-width:800px;
   margin:100px auto;
@@ -47,10 +40,35 @@ body{
   text-align:center;
 }
 
-h2{
-  font-size:24px;
-  color:#1e40af;
-  font-weight:800;
+select, input{
+  width:100%;
+  padding:12px;
+  margin-top:14px;
+  border-radius:10px;
+  border:1.6px solid #cbd5e1;
+  font-size:15px;
+}
+button:disabled{
+  background:#94a3b8;
+  cursor:not-allowed;
+}
+button{
+  margin-top:16px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#16a34a;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.result-card{
+  background:#eef2ff;
+  margin-top:16px;
+  padding:16px;
+  border-radius:12px;
+  text-align:left;
 }
 </style>
 </head>
@@ -60,8 +78,159 @@ h2{
 <a href="dashboard.html" class="back-btn">⬅️ डॅशबोर्डवर परत जा</a>
 
 <div class="container">
-  <h2>⏳ वेळापत्रक लवकरच जाहीर केले जाईल</h2>
+  <h2>📅 वेळापत्रक पहा</h2>
+
+  <select id="main">
+    <option value="">कार्यक्रम प्रकार निवडा</option>
+    <option value="sports">क्रीडा</option>
+    <option value="cultural">सांस्कृतिक</option>
+  </select>
+
+  <select id="type">
+    <option value="">सहभाग प्रकार निवडा</option>
+    <option value="individual">वैयक्तिक</option>
+    <option value="duheri">दुहेरी</option>
+    <option value="team">सांघिक</option>
+  </select>
+
+  <select id="program" disabled>
+  <option value="">खेळ / कार्यक्रम निवडा</option>
+</select>
+
+  <button id="showBtn" onclick="loadVelapatrak()" disabled>वेळापत्रक पहा</button>
+
+  <div id="result"></div>
 </div>
 
+<script>
+const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+
+// ✅ DOM ready झाल्यावरच events लावा
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("main").addEventListener("change", loadPrograms);
+  document.getElementById("type").addEventListener("change", loadPrograms);
+
+  const clearResult = () => {
+    document.getElementById("result").innerHTML = "";
+  };
+
+  document.getElementById("main").addEventListener("change", clearResult);
+  document.getElementById("type").addEventListener("change", clearResult);
+  document.getElementById("program").addEventListener("change", clearResult);
+    const toggleBtn = () => {
+    const main = document.getElementById("main").value;
+    const type = document.getElementById("type").value;
+    const program = document.getElementById("program").value;
+    document.getElementById("showBtn").disabled = !(main && type && program);
+  };
+
+  document.getElementById("main").addEventListener("change", toggleBtn);
+  document.getElementById("type").addEventListener("change", toggleBtn);
+  document.getElementById("program").addEventListener("change", toggleBtn);
+toggleBtn();   // ✅ initial state fix
+});
+
+function formatDate(d){
+  const dt = new Date(d);
+  return dt.toLocaleDateString('mr-IN', {
+    day:'2-digit',
+    month:'long',
+    year:'numeric'
+  });
+}
+
+// ✅ Load programs dynamically
+async function loadPrograms(){
+
+  const main = document.getElementById("main").value;
+  const type = document.getElementById("type").value;
+
+  const prog = document.getElementById("program");
+  prog.innerHTML = '<option value="">लोड होत आहे...</option>';
+  prog.disabled = true;
+
+  if(!main || !type){
+    prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
+    prog.disabled = true;
+    return;
+  }
+
+  try{
+    const res = await fetch(
+      `${API}?action=velapatrakPrograms&main=${main}&type=${type}`
+    );
+
+    const list = await res.json();
+
+    prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
+
+    if(list.length === 0){
+  prog.innerHTML = '<option value="">या प्रकारासाठी वेळापत्रक उपलब्ध नाही</option>';
+  prog.disabled = true;
+  document.getElementById("showBtn").disabled = true;
+  return;
+}
+
+    list.forEach(p=>{
+      const opt = document.createElement("option");
+      opt.value = p;
+      opt.textContent = p;
+      prog.appendChild(opt);
+    });
+
+    prog.disabled = false;
+document.getElementById("showBtn").disabled = true;
+  }catch(err){
+  prog.innerHTML = '<option value="">Server error</option>';
+  prog.disabled = true;
+  document.getElementById("showBtn").disabled = true;
+}
+}
+// ✅ Load velapatrak
+async function loadVelapatrak(){
+
+  const main = document.getElementById("main").value;
+  const type = document.getElementById("type").value;
+  const program = document.getElementById("program").value.trim();
+document.getElementById("result").innerHTML = "";
+  if(!main || !type || !program){
+    alert("सर्व माहिती भरा");
+    return;
+  }
+
+  const box = document.getElementById("result");
+box.innerHTML = "लोड होत आहे...";
+
+try{
+
+  const res = await fetch(
+    `${API}?action=velapatrakFilter&main=${main}&type=${type}&program=${encodeURIComponent(program)}`
+  );
+
+  const data = await res.json();
+
+  if(data.length === 0){
+    box.innerHTML = "<p>वेळापत्रक सापडले नाही</p>";
+    return;
+  }
+
+  box.innerHTML = "";
+
+  data.forEach(d=>{
+    box.innerHTML += `
+      <div class="result-card">
+        <b>${d.round}</b><br>
+        🆚 ${d.teamA} vs ${d.teamB}<br>
+        📅 ${formatDate(d.date)} ⏰ ${d.time}<br>
+        📍 ${d.venue}
+      </div>
+    `;
+  });
+
+}catch(e){
+  box.innerHTML = "Server error. पुन्हा प्रयत्न करा.";
+}
+} 
+</script>
 </body>
 </html>
