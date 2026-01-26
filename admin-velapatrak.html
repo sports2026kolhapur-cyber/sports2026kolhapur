@@ -98,14 +98,7 @@ button{
 <script>
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-// 🛡️ adminToken localStorage मधून
-const params = new URLSearchParams(window.location.search);
-const adminToken = params.get("token");
 
-if(!adminToken){
-  alert("Session expired. पुन्हा login करा.");
-  window.location.href = "admin-login.html";
-}
 // program dropdown auto load
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("main").addEventListener("change", loadPrograms);
@@ -126,7 +119,7 @@ async function loadPrograms(){
   }
 
   const res = await fetch(
-    `${API}?action=adminPrograms&main=${main}&type=${type}&adminToken=${adminToken}`
+    `${API}?action=adminPrograms&main=${main}&type=${type}`
   );
 
   const list = await res.json();
@@ -170,8 +163,7 @@ async function saveVelapatrak(){
 
   try{
     const res = await fetch(
-      `${API}?action=addVelapatrak`+
-      `&adminToken=${adminToken}`+
+     `${API}?action=addVelapatrak`+
      `&main=${encodeURIComponent(main)}`+
 `&type=${encodeURIComponent(type)}`+
       `&program=${encodeURIComponent(program)}`+
@@ -199,9 +191,7 @@ document.getElementById("type").value = "";
       document.querySelectorAll("input").forEach(i=>i.value="");
     }else{
   msg.style.color="red";
-  msg.innerHTML = "Session expired. पुन्हा login करा.";
-  localStorage.removeItem("adminToken");
-  setTimeout(()=>window.location.href="admin-login.html",1500);
+msg.innerHTML = "Error";
 }
 
   }catch(e){
