@@ -69,7 +69,7 @@ th{
 
   <div class="card">
 
-    <select id="main">
+   <select id="main" onchange="loadPrograms()">
       <option value="">कार्यक्रम प्रकार</option>
       <option value="sports">क्रीडा</option>
       <option value="cultural">सांस्कृतिक</option>
@@ -117,7 +117,17 @@ async function loadPrograms(){
   const type = typeSelect.value;
   if(!main || !type) return;
 
-  const res = await fetch(`${API}?action=programs&main=${main}&type=${type}`);
+  const mainMr =
+  main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+
+const typeMr =
+  type === "individual" ? "वैयक्तिक" :
+  type === "duheri" ? "दुहेरी" : "सांघिक";
+
+const res = await fetch(
+  `${API}?action=programs&main=${encodeURIComponent(mainMr)}&type=${encodeURIComponent(typeMr)}`
+);
+
   const list = await res.json();
 
   programSelect.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
@@ -137,9 +147,17 @@ async function loadPlayers(){
 
   if(!main || !type || !prog) return;
 
-  const res = await fetch(
-    `${API}?action=playersList&main=${main}&type=${type}&program=${encodeURIComponent(prog)}`
-  );
+  const mainMr =
+  main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+
+const typeMr =
+  type === "individual" ? "वैयक्तिक" :
+  type === "duheri" ? "दुहेरी" : "सांघिक";
+
+const res = await fetch(
+`${API}?action=playersList&main=${encodeURIComponent(mainMr)}&type=${encodeURIComponent(typeMr)}&program=${encodeURIComponent(prog)}`
+);
+
 
   playerData = await res.json();
 
