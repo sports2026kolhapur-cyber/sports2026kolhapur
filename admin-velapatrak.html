@@ -96,6 +96,17 @@
     </div>
 
     <script>
+      const VALUE_TO_MARATHI = {
+        // main
+        sports: "क्रीडा",
+        cultural: "सांस्कृतिक",
+
+        // type
+        individual: "वैयक्तिक",
+        duheri: "दुहेरी",
+        team: "सांघिक",
+      };
+
       const API =
         "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
       const adminToken = sessionStorage.getItem("adminToken");
@@ -149,8 +160,13 @@
         const msg = document.getElementById("msg");
         msg.innerHTML = "Saving...";
 
-        const main = document.getElementById("main").value;
-        const type = document.getElementById("type").value;
+        //const main = document.getElementById("main").value;
+        //const type = document.getElementById("type").value;
+        const mainVal = document.getElementById("main").value;
+        const typeVal = document.getElementById("type").value;
+
+        const main = VALUE_TO_MARATHI[mainVal] || mainVal;
+        const type = VALUE_TO_MARATHI[typeVal] || typeVal;
         const program = document.getElementById("program").value.trim();
         const round = document.getElementById("round").value.trim();
         const teamA = document.getElementById("teamA").value.trim();

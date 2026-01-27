@@ -220,8 +220,6 @@
             `${API}?action=velapatrakFilter&main=${main}&type=${type}&program=${encodeURIComponent(program)}`,
           );
 
-          //https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec?action=velapatrakFilter&main=क्रीडा&type=वैयक्तिक&program=जलतरण ५० मी फ्री स्टाईल
-
           const data = await res.json();
 
           if (data.length === 0) {
