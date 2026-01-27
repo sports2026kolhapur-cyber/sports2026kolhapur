@@ -172,13 +172,15 @@ async function loadPlayers(){
     type === "individual" ? "वैयक्तिक" :
     type === "duheri" ? "दुहेरी" : "सांघिक";
 
-  const res = await fetch(
-    `${API}?action=playersList
-    &office=${encodeURIComponent(office)}
-    &main=${encodeURIComponent(mainMr)}
-    &type=${encodeURIComponent(typeMr)}
-    &program=${encodeURIComponent(prog)}`
-  );
+  const office = officeSelect.value;
+
+const res = await fetch(
+`${API}?action=playersList
+&office=${encodeURIComponent(office)}
+&main=${encodeURIComponent(mainMr)}
+&type=${encodeURIComponent(typeMr)}
+&program=${encodeURIComponent(prog)}`
+);
 
   playerData = await res.json();
 
