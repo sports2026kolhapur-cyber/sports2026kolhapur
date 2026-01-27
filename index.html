@@ -871,24 +871,24 @@ function detectDuplicateParticipants(participants){
 
 function getPlayerFromRow(row){
   return {
-    firstName: norm(row.querySelector("input[type='text']:nth-of-type(1)")?.value),
-    middleName: norm(row.querySelector("input[type='text']:nth-of-type(2)")?.value),
-    lastName: norm(row.querySelector("input[type='text']:nth-of-type(3)")?.value),
+    firstName: norm(row.querySelector("input[name='playerFirstName[]']")?.value),
+    middleName: norm(row.querySelector("input[name='playerMiddleName[]']")?.value),
+    lastName: norm(row.querySelector("input[name='playerLastName[]']")?.value),
     arrivalDate: row.querySelector("input[type='date']")?.value || "",
-    gender: row.querySelector("select:nth-of-type(1)")?.value || "",
-    designation: row.querySelector("select:nth-of-type(2)")?.value || "",
-    mobile: norm(row.querySelector("input[type='tel']")?.value)
+    gender: row.querySelector("select[name='playerGender[]']")?.value || "",
+    designation: row.querySelector("select[name='playerPadnaam[]']")?.value || "",
+    mobile: norm(row.querySelector("input[name='playerMobile[]']")?.value)
   };
 }
   function getCulturalPlayerFromRow(row){
   return {
-    firstName: norm(row.querySelector("input[type='text']:nth-of-type(1)")?.value),
-    middleName: norm(row.querySelector("input[type='text']:nth-of-type(2)")?.value),
-    lastName: norm(row.querySelector("input[type='text']:nth-of-type(3)")?.value),
+    firstName: norm(row.querySelector("input[name='cFirstName[]']")?.value),
+    middleName: norm(row.querySelector("input[name='cMiddleName[]']")?.value),
+    lastName: norm(row.querySelector("input[name='cLastName[]']")?.value),
     arrivalDate: row.querySelector("input[type='date']")?.value || "",
-    gender: row.querySelector("select:nth-of-type(1)")?.value || "",
-    designation: row.querySelector("select:nth-of-type(2)")?.value || "",
-    mobile: norm(row.querySelector("input[type='tel']")?.value)
+    gender: row.querySelector("select[name='cGender[]']")?.value || "",
+    designation: row.querySelector("select[name='cPadnaam[]']")?.value || "",
+    mobile: norm(row.querySelector("input[name='cMobile[]']")?.value)
   };
 }
 function validateMarathiFieldsBeforeSubmit(){
@@ -1083,14 +1083,14 @@ function addPlayer(){
            title="फक्त मराठी अक्षरं वापरा" data-msg-required="कृपया खेळाडूचे आडनाव भरा." data-msg-pattern="फक्त मराठीत भरा.">
     <input type="date" required title="तारीख आवश्यक आहे" data-msg-required="कृपया पोहोचण्याची तारीख निवडा.">
 <!-- ✅ Gender -->
-    <select name="playerGender[]" class="genderField">
+    <select name="playerGender[]" class="genderField" required>
       <option value="">— लिंग —</option>
       <option value="Male">पुरुष</option>
       <option value="Female">स्त्री</option>
     </select>
 
     <!-- ✅ Padnaam -->
-    <select name="playerPadnaam[]" class="designationField">
+   <select name="playerPadnaam[]" class="designationField" required>
       <option value="">— पदनाम —</option>
       <option value="मा. मुख्य अभियंता">मा. मुख्य अभियंता</option>
       <option value="अधीक्षक अभियंता">अधीक्षक अभियंता</option>
@@ -1221,14 +1221,14 @@ function addCulturalPlayer(){
            title="फक्त मराठी अक्षरं वापरा" data-msg-required="कृपया कलाकाराचे आडनाव भरा." data-msg-pattern="फक्त मराठीत भरा.">
    <input type="date" name="cArrivalDate[]" required title="तारीख आवश्यक आहे">
 <!-- ✅ Gender -->
-    <select name="cGender[]" class="cGenderField">
+    <select name="cGender[]" class="cGenderField" required>
       <option value="">— लिंग —</option>
       <option value="Male">पुरुष</option>
       <option value="Female">स्त्री</option>
     </select>
 
     <!-- ✅ Padnaam -->
-    <select name="cPadnaam[]" class="cPadnaamField">
+    <select name="cPadnaam[]" class="cPadnaamField" required>
       <option value="">— पदनाम —</option>
       <option value="मा. मुख्य अभियंता">मा. मुख्य अभियंता</option>
       <option value="अधीक्षक अभियंता">अधीक्षक अभियंता</option>
