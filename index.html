@@ -880,6 +880,17 @@ function getPlayerFromRow(row){
     mobile: norm(row.querySelector("input[type='tel']")?.value)
   };
 }
+  function getCulturalPlayerFromRow(row){
+  return {
+    firstName: norm(row.querySelector("[name='cFirstName[]']")?.value),
+    middleName: norm(row.querySelector("[name='cMiddleName[]']")?.value),
+    lastName: norm(row.querySelector("[name='cLastName[]']")?.value),
+    arrivalDate: row.querySelector("[name='cArrivalDate[]']")?.value || "",
+    gender: row.querySelector("[name='cGender[]']")?.value || "",
+    designation: row.querySelector("[name='cPadnaam[]']")?.value || "",
+    mobile: norm(row.querySelector("[name='cMobile[]']")?.value)
+  };
+}
 function validateMarathiFieldsBeforeSubmit(){
   const marathiInputs = document.querySelectorAll('input[data-marathi="1"]');
   for(const el of marathiInputs){
@@ -1574,7 +1585,7 @@ designation: document.getElementById("cCaptainPadnaam").value,
 };
 
       const artists = Array.from(document.querySelectorAll("#culturalPlayers .playerRow")).map(r=>{
-        const p = getPlayerFromRow(r);
+        const p = getCulturalPlayerFromRow(r);
         return { role:"player", ...p };
       });
 const all = [captain, ...artists];
