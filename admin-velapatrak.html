@@ -97,6 +97,7 @@ button{
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+const adminToken = localStorage.getItem("adminToken");
 
 
 // program dropdown auto load
@@ -138,7 +139,10 @@ async function loadPrograms(){
 }
 
 async function saveVelapatrak(){
-
+if(!adminToken){
+  alert("Admin login expired. कृपया पुन्हा login करा.");
+  return;
+}
   const msg = document.getElementById("msg");
   msg.innerHTML = "Saving...";
 
@@ -159,7 +163,7 @@ async function saveVelapatrak(){
 
   try{
     const res = await fetch(
-     `${API}?action=addVelapatrak`+
+     `${API}?action=addVelapatrak&adminToken=${adminToken}`+
      `&main=${encodeURIComponent(main)}`+
 `&type=${encodeURIComponent(type)}`+
       `&program=${encodeURIComponent(program)}`+
@@ -187,7 +191,7 @@ document.getElementById("type").value = "";
       document.querySelectorAll("input").forEach(i=>i.value="");
     }else{
   msg.style.color="red";
-msg.innerHTML = "Error";
+  msg.innerHTML = data.message || "Error";
 }
 
   }catch(e){
