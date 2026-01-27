@@ -102,6 +102,8 @@ th{
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function(){
+
 // 🔐 login check
 if(sessionStorage.getItem("coordAuth") !== "1"){
   location.href="coordinator-login.html";
@@ -109,7 +111,6 @@ if(sessionStorage.getItem("coordAuth") !== "1"){
 
 const API_URL = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-// ✅ DOM references (IMPORTANT)
 const officeEl = document.getElementById("office");
 const typeEl   = document.getElementById("type");
 const eventEl  = document.getElementById("event");
@@ -118,18 +119,16 @@ const postEl   = document.getElementById("post");
 const mobileEl = document.getElementById("mobile");
 
 // ✅ offices load
-async function loadOffices(){
-  const res = await fetch(API_URL + "?action=offices");
-  const offices = await res.json();
-
+fetch(API_URL + "?action=offices")
+.then(r=>r.json())
+.then(offices=>{
   offices.forEach(o=>{
     const op = document.createElement("option");
     op.value = o;
     op.textContent = o;
     officeEl.appendChild(op);
   });
-}
-loadOffices();
+});
 
 // table render helper
 function addRow(d){
@@ -145,7 +144,8 @@ function addRow(d){
   tbody.prepend(tr);
 }
 
-async function addEntry(){
+// ✅ button function global कर
+window.addEntry = async function(){
 
   const entry = {
     action: "addCoordinator",
@@ -165,7 +165,6 @@ async function addEntry(){
   try{
     const res = await fetch(API_URL,{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
       body: JSON.stringify(entry)
     });
 
@@ -188,7 +187,10 @@ async function addEntry(){
   }catch(e){
     alert("Connection error");
   }
-}
+
+};
+
+});
 </script>
 
 </body>
