@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>खेळाडू माहिती</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+  background:#f1f5f9;
+  padding:20px;
+}
+.container{max-width:900px;margin:auto;}
+.header{
+  background:#9333ea;
+  color:#fff;
+  padding:22px;
+  border-radius:16px;
+  text-align:center;
+}
+.card{
+  margin-top:24px;
+  background:#fff;
+  padding:22px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+select,button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  font-size:15px;
+}
+button{
+  background:#16a34a;
+  color:#fff;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+th,td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:left;
+}
+th{background:#f3f4f6;}
+.download{
+  background:#0ea5e9;
+  margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="header">
+    <h2>🧾 नोंदणीकृत खेळाडू माहिती</h2>
+  </div>
+
+  <div class="card">
+
+    <select id="main">
+      <option value="">कार्यक्रम प्रकार</option>
+      <option value="sports">क्रीडा</option>
+      <option value="cultural">सांस्कृतिक</option>
+    </select>
+
+    <select id="type">
+      <option value="">सहभाग प्रकार</option>
+      <option value="individual">वैयक्तिक</option>
+      <option value="duheri">दुहेरी</option>
+      <option value="team">सांघिक</option>
+    </select>
+
+    <select id="program">
+      <option value="">खेळ / कार्यक्रम</option>
+    </select>
+
+    <button onclick="loadPlayers()">खेळाडू पहा</button>
+    <button class="download" onclick="downloadExcel()">Excel डाउनलोड करा</button>
+
+    <table id="tbl" style="display:none;">
+      <thead>
+        <tr>
+          <th>नाव</th>
+          <th>पदनाम</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+const API = "YOUR_SCRIPT_URL_HERE";
+let playerData = [];
+
+// programs dropdown
+document.getElementById("type").addEventListener("change", loadPrograms);
+document.getElementById("main").addEventListener("change", loadPrograms);
+
+async function loadPrograms(){
+  const main = mainSelect.value;
+  const type = typeSelect.value;
+  if(!main || !type) return;
+
+  const res = await fetch(`${API}?action=programs&main=${main}&type=${type}`);
+  const list = await res.json();
+
+  program.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
+  list.forEach(p=>{
+    const o = document.createElement("option");
+    o.value=p; o.textContent=p;
+    program.appendChild(o);
+  });
+}
+
+async function loadPlayers(){
+  const main = mainSelect.value;
+  const type = typeSelect.value;
+  const prog = program.value;
+
+  if(!main || !type || !prog) return;
+
+  const res = await fetch(
+    `${API}?action=playersList&main=${main}&type=${type}&program=${encodeURIComponent(prog)}`
+  );
+
+  playerData = await res.json();
+
+  const tbody = document.querySelector("#tbl tbody");
+  tbody.innerHTML="";
+
+  playerData.forEach(p=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${p.name}</td><td>${p.designation}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("tbl").style.display="table";
+}
+
+function downloadExcel(){
+  let csv="नाव,पदनाम\n";
+  playerData.forEach(p=>{
+    csv+=`${p.name},${p.designation}\n`;
+  });
+
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="players.csv";
+  a.click();
+}
+</script>
+
+</body>
+</html>
