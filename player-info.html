@@ -132,18 +132,22 @@ let playerData = [];
 async function loadPrograms(){
   const main = mainSelect.value;
   const type = typeSelect.value;
-  if(!main || !type) return;
+  const office = document.getElementById("office").value;
+
+  if(!main || !type || !office) return;
 
   const mainMr =
-  main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+    main === "sports" ? "क्रीडा" : "सांस्कृतिक";
 
-const typeMr =
-  type === "individual" ? "वैयक्तिक" :
-  type === "duheri" ? "दुहेरी" : "सांघिक";
+  const typeMr =
+    type === "individual" ? "वैयक्तिक" :
+    type === "duheri" ? "दुहेरी" : "सांघिक";
 
-const res = await fetch(
-  `${API}?action=programs&main=${encodeURIComponent(mainMr)}&type=${encodeURIComponent(typeMr)}`
-);
+  const res = await fetch(
+    `${API}?action=programs`
+    + `&main=${encodeURIComponent(mainMr)}`
+    + `&type=${encodeURIComponent(typeMr)}`
+  );
 
   const list = await res.json();
 
@@ -174,13 +178,16 @@ async function loadPlayers(){
 
   const office = officeSelect.value;
 
+const office = document.getElementById("office").value;
+
 const res = await fetch(
-`${API}?action=playersList
-&office=${encodeURIComponent(office)}
-&main=${encodeURIComponent(mainMr)}
-&type=${encodeURIComponent(typeMr)}
-&program=${encodeURIComponent(prog)}`
+`${API}?action=playersList`
++ `&office=${encodeURIComponent(office)}`
++ `&main=${encodeURIComponent(mainMr)}`
++ `&type=${encodeURIComponent(typeMr)}`
++ `&program=${encodeURIComponent(prog)}`
 );
+
 
   playerData = await res.json();
 
