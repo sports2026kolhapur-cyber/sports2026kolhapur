@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>Coordinator Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  display:flex;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+  background:#f1f5f9;
+  font-family:"Mukta",sans-serif;
+}
+.card{
+  background:#fff;
+  padding:30px;
+  border-radius:14px;
+  width:320px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  text-align:center;
+}
+input{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button{
+  margin-top:16px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#9333ea;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+.error{color:red;margin-top:8px;}
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h2>Coordinator Login</h2>
+  <input type="password" id="pass" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <div id="err" class="error"></div>
+</div>
+
+<script>
+function login(){
+  const p = document.getElementById("pass").value;
+
+  if(p === "coord@2026"){   // 🔐 तू password बदलू शकतोस
+    sessionStorage.setItem("coordAuth","1");
+    location.href = "coordinator-names.html";
+  }else{
+    document.getElementById("err").textContent = "चुकीचा पासवर्ड";
+  }
+}
+</script>
+</body>
+</html>
