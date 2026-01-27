@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>समन्वयक अधिकारी नोंद</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:"Mukta",sans-serif;
+  background:#f1f5f9;
+  padding:20px;
+}
+
+.card{
+  max-width:720px;
+  margin:auto;
+  background:#fff;
+  padding:24px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h2{text-align:center;margin-bottom:18px;}
+
+input, select{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+
+button{
+  margin-top:14px;
+  padding:12px;
+  width:100%;
+  border:none;
+  border-radius:8px;
+  background:#16a34a;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+table{
+  width:100%;
+  margin-top:22px;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+th,td{
+  border:1px solid #ddd;
+  padding:8px;
+  text-align:center;
+}
+
+th{
+  background:#1e40af;
+  color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>समन्वयक अधिकाऱ्यांची माहिती भरा</h2>
+
+  <select id="type">
+    <option value="">कार्यक्रम प्रकार निवडा</option>
+    <option>क्रीडा स्पर्धा</option>
+    <option>सांस्कृतिक कार्यक्रम</option>
+  </select>
+
+  <input type="text" id="event" placeholder="खेळ / कार्यक्रमाचे नाव">
+  <input type="text" id="name" placeholder="समन्वयक अधिकाऱ्याचे नाव">
+  <input type="text" id="post" placeholder="पदनाम">
+  <input type="number" id="mobile" placeholder="संपर्क क्रमांक">
+
+  <button onclick="addEntry()">नोंद जोडा</button>
+
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>प्रकार</th>
+        <th>कार्यक्रम</th>
+        <th>नाव</th>
+        <th>पदनाम</th>
+        <th>संपर्क</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+// 🔐 login check
+if(sessionStorage.getItem("coordAuth") !== "1"){
+  location.href="coordinator-login.html";
+}
+
+let data = JSON.parse(localStorage.getItem("coordData") || "[]");
+
+function render(){
+  const tbody = document.querySelector("#dataTable tbody");
+  tbody.innerHTML = "";
+
+  data.forEach(d=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${d.type}</td>
+      <td>${d.event}</td>
+      <td>${d.name}</td>
+      <td>${d.post}</td>
+      <td>${d.mobile}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function addEntry(){
+  const entry = {
+    type: type.value,
+    event: event.value,
+    name: name.value,
+    post: post.value,
+    mobile: mobile.value
+  };
+
+  if(!entry.type || !entry.event || !entry.name){
+    alert("सर्व माहिती भरा");
+    return;
+  }
+
+  data.push(entry);
+  localStorage.setItem("coordData", JSON.stringify(data));
+
+  type.value="";
+  event.value="";
+  name.value="";
+  post.value="";
+  mobile.value="";
+
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
