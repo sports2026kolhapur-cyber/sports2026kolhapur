@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<title>समन्वयक अधिकाऱ्यांची यादी</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
+  background:#f1f5f9;
+  padding:20px;
+}
+
+.container{max-width:1000px;margin:auto;}
+
+h2{
+  text-align:center;
+  margin-bottom:18px;
+}
+
+select{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin-bottom:16px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+th,td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:center;
+  font-size:14px;
+}
+
+th{
+  background:#1e40af;
+  color:#fff;
+}
+
+.back{
+  display:inline-block;
+  margin-bottom:16px;
+  text-decoration:none;
+  background:#1e40af;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="dashboard.html" class="back">⬅️ डॅशबोर्ड</a>
+
+<h2>समन्वयक अधिकाऱ्यांची कार्यालयनिहाय यादी</h2>
+
+<select id="officeFilter">
+  <option value="">सर्व कार्यालये</option>
+</select>
+
+<table>
+  <thead>
+    <tr>
+      <th>कार्यालय</th>
+      <th>प्रकार</th>
+      <th>कार्यक्रम</th>
+      <th>नाव</th>
+      <th>पदनाम</th>
+      <th>संपर्क</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+
+let allData = [];
+
+async function loadData(){
+  const res = await fetch(API_URL + "?action=coordinators");
+  allData = await res.json();
+
+  populateOffices();
+  renderTable();
+}
+
+function populateOffices(){
+  const offices = [...new Set(allData.map(d=>d.office))];
+  const sel = document.getElementById("officeFilter");
+
+  offices.forEach(o=>{
+    const opt = document.createElement("option");
+    opt.value = o;
+    opt.textContent = o;
+    sel.appendChild(opt);
+  });
+}
+
+function renderTable(){
+  const office = officeFilter.value;
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  allData
+    .filter(d => !office || d.office === office)
+    .forEach(d=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${d.office}</td>
+        <td>${d.type}</td>
+        <td>${d.event}</td>
+        <td>${d.name}</td>
+        <td>${d.post}</td>
+        <td>${d.mobile}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+}
+
+officeFilter.addEventListener("change", renderTable);
+
+loadData();
+</script>
+
+</body>
+</html>
