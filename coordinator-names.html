@@ -102,32 +102,32 @@ if(sessionStorage.getItem("coordAuth") !== "1"){
   location.href="coordinator-login.html";
 }
 
-let data = JSON.parse(localStorage.getItem("coordData") || "[]");
+const API_URL = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-function render(){
+// table render helper
+function addRow(d){
   const tbody = document.querySelector("#dataTable tbody");
-  tbody.innerHTML = "";
-
-  data.forEach(d=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${d.type}</td>
-      <td>${d.event}</td>
-      <td>${d.name}</td>
-      <td>${d.post}</td>
-      <td>${d.mobile}</td>
-    `;
-    tbody.appendChild(tr);
-  });
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${d.type}</td>
+    <td>${d.event}</td>
+    <td>${d.name}</td>
+    <td>${d.post}</td>
+    <td>${d.mobile}</td>
+  `;
+  tbody.prepend(tr); // latest on top
 }
 
-function addEntry(){
+async function addEntry(){
+
   const entry = {
-    type: type.value,
-    event: event.value,
-    name: name.value,
-    post: post.value,
-    mobile: mobile.value
+    action: "addCoordinator",
+    type: type.value.trim(),
+    event: event.value.trim(),
+    name: name.value.trim(),
+    post: post.value.trim(),
+    mobile: mobile.value.trim(),
+    by: "Coordinator Admin"
   };
 
   if(!entry.type || !entry.event || !entry.name){
@@ -135,19 +135,32 @@ function addEntry(){
     return;
   }
 
-  data.push(entry);
-  localStorage.setItem("coordData", JSON.stringify(data));
+  try{
+    const res = await fetch(API_URL,{
+      method:"POST",
+      body: JSON.stringify(entry)
+    });
 
-  type.value="";
-  event.value="";
-  name.value="";
-  post.value="";
-  mobile.value="";
+    const d = await res.json();
 
-  render();
+    if(d.ok){
+      alert("नोंद यशस्वी झाली ✅");
+
+      addRow(entry); // table मध्ये लगेच दाखव
+
+      type.value="";
+      event.value="";
+      name.value="";
+      post.value="";
+      mobile.value="";
+    }else{
+      alert("Server error");
+    }
+
+  }catch(e){
+    alert("Connection error");
+  }
 }
-
-render();
 </script>
 
 </body>
