@@ -1,205 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mr">
-<head>
-<meta charset="UTF-8">
-<title>Admin – वेळापत्रक भरा</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin – वेळापत्रक भरा</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body{
-  font-family:"Mukta",sans-serif;
-  background:#f1f5f9;
-  padding:20px;
-}
+    <style>
+      body {
+        font-family: "Mukta", sans-serif;
+        background: #f1f5f9;
+        padding: 20px;
+      }
 
-.container{
-  max-width:700px;
-  margin:auto;
-  background:#fff;
-  padding:30px;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
+      .container {
+        max-width: 700px;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
 
-h2{
-  text-align:center;
-  color:#1e40af;
-}
+      h2 {
+        text-align: center;
+        color: #1e40af;
+      }
 
-select,input{
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  border-radius:10px;
-  border:1.5px solid #cbd5e1;
-  font-size:15px;
-}
+      select,
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 12px;
+        border-radius: 10px;
+        border: 1.5px solid #cbd5e1;
+        font-size: 15px;
+      }
 
-button{
-  margin-top:18px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#16a34a;
-  color:#fff;
-  font-weight:700;
-  font-size:16px;
-  cursor:pointer;
-}
+      button {
+        margin-top: 18px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #16a34a;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+      }
 
-.msg{
-  margin-top:14px;
-  font-weight:700;
-  text-align:center;
-}
-</style>
-</head>
+      .msg {
+        margin-top: 14px;
+        font-weight: 700;
+        text-align: center;
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <h2>🗓️ Admin – वेळापत्रक नोंद</h2>
 
-<div class="container">
-  <h2>🗓️ Admin – वेळापत्रक नोंद</h2>
+      <select id="main">
+        <option value="">कार्यक्रम प्रकार</option>
+        <option value="sports">क्रीडा</option>
+        <option value="cultural">सांस्कृतिक</option>
+      </select>
 
-  <select id="main">
-    <option value="">कार्यक्रम प्रकार</option>
-    <option value="sports">क्रीडा</option>
-    <option value="cultural">सांस्कृतिक</option>
-  </select>
+      <select id="type">
+        <option value="">सहभाग प्रकार</option>
+        <option value="individual">वैयक्तिक</option>
+        <option value="duheri">दुहेरी</option>
+        <option value="team">सांघिक</option>
+      </select>
 
-  <select id="type">
-    <option value="">सहभाग प्रकार</option>
-    <option value="individual">वैयक्तिक</option>
-    <option value="duheri">दुहेरी</option>
-    <option value="team">सांघिक</option>
-  </select>
+      <select id="program" disabled>
+        <option value="">खेळ / कार्यक्रम निवडा</option>
+      </select>
 
-  <select id="program" disabled>
-  <option value="">खेळ / कार्यक्रम निवडा</option>
-</select>
+      <input id="round" placeholder="फेरी (उदा. उपांत्य फेरी)" />
 
-  <input id="round" placeholder="फेरी (उदा. उपांत्य फेरी)">
+      <input id="teamA" placeholder="Team A" />
 
-  <input id="teamA" placeholder="Team A">
+      <input id="teamB" placeholder="Team B" />
 
-  <input id="teamB" placeholder="Team B">
+      <input type="date" id="date" />
 
-  <input type="date" id="date">
+      <input type="time" id="time" />
 
-  <input type="time" id="time">
+      <input id="venue" placeholder="ठिकाण" />
 
-  <input id="venue" placeholder="ठिकाण">
+      <button onclick="saveVelapatrak()">वेळापत्रक जतन करा</button>
 
-  <button onclick="saveVelapatrak()">वेळापत्रक जतन करा</button>
+      <div class="msg" id="msg"></div>
+    </div>
 
-  <div class="msg" id="msg"></div>
-</div>
+    <script>
+      const API =
+        "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+      const adminToken = sessionStorage.getItem("adminToken");
 
-<script>
-const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
-const adminToken = localStorage.getItem("adminToken");
+      // program dropdown auto load
+      window.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("main")
+          .addEventListener("change", loadPrograms);
+        document
+          .getElementById("type")
+          .addEventListener("change", loadPrograms);
+      });
 
+      async function loadPrograms() {
+        const main = document.getElementById("main").value;
+        const type = document.getElementById("type").value;
+        const prog = document.getElementById("program");
 
-// program dropdown auto load
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("main").addEventListener("change", loadPrograms);
-  document.getElementById("type").addEventListener("change", loadPrograms);
-});
+        prog.innerHTML = "<option>लोड होत आहे...</option>";
+        prog.disabled = true;
 
-async function loadPrograms(){
+        if (!main || !type) {
+          prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
+          return;
+        }
 
-  const main = document.getElementById("main").value;
-  const type = document.getElementById("type").value;
-  const prog = document.getElementById("program");
+        const res = await fetch(
+          `${API}?action=velapatrakPrograms&main=${encodeURIComponent(main)}&type=${encodeURIComponent(type)}`,
+        );
 
-  prog.innerHTML = '<option>लोड होत आहे...</option>';
-  prog.disabled = true;
+        const list = await res.json();
 
-  if(!main || !type){
-    prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
-    return;
-  }
+        prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
 
-  const res = await fetch(
-    `${API}?action=velapatrakPrograms&main=${encodeURIComponent(main)}&type=${encodeURIComponent(type)}`
-  );
+        list.forEach((p) => {
+          const opt = document.createElement("option");
+          opt.value = p;
+          opt.textContent = p;
+          prog.appendChild(opt);
+        });
 
-  const list = await res.json();
+        prog.disabled = false;
+      }
 
-  prog.innerHTML = '<option value="">खेळ / कार्यक्रम निवडा</option>';
+      async function saveVelapatrak() {
+        if (!adminToken) {
+          alert("Admin login expired. कृपया पुन्हा login करा.");
+          return;
+        }
+        const msg = document.getElementById("msg");
+        msg.innerHTML = "Saving...";
 
-  list.forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    prog.appendChild(opt);
-  });
+        const main = document.getElementById("main").value;
+        const type = document.getElementById("type").value;
+        const program = document.getElementById("program").value.trim();
+        const round = document.getElementById("round").value.trim();
+        const teamA = document.getElementById("teamA").value.trim();
+        const teamB = document.getElementById("teamB").value.trim();
+        const date = document.getElementById("date").value;
+        const time = document.getElementById("time").value;
+        const venue = document.getElementById("venue").value.trim();
 
-  prog.disabled = false;
-}
+        if (
+          !main ||
+          !type ||
+          !program ||
+          !round ||
+          !teamA ||
+          !teamB ||
+          !date ||
+          !time ||
+          !venue
+        ) {
+          msg.innerHTML = "सर्व माहिती भरा";
+          return;
+        }
 
-async function saveVelapatrak(){
-if(!adminToken){
-  alert("Admin login expired. कृपया पुन्हा login करा.");
-  return;
-}
-  const msg = document.getElementById("msg");
-  msg.innerHTML = "Saving...";
+        try {
+          const res = await fetch(
+            `${API}?action=addVelapatrak&adminToken=${adminToken}` +
+              `&main=${encodeURIComponent(main)}` +
+              `&type=${encodeURIComponent(type)}` +
+              `&program=${encodeURIComponent(program)}` +
+              `&round=${encodeURIComponent(round)}` +
+              `&teamA=${encodeURIComponent(teamA)}` +
+              `&teamB=${encodeURIComponent(teamB)}` +
+              `&date=${date}` +
+              `&time=${time}` +
+              `&venue=${encodeURIComponent(venue)}`,
+          );
 
-  const main   = document.getElementById("main").value;
-  const type   = document.getElementById("type").value;
-  const program= document.getElementById("program").value.trim();
-  const round  = document.getElementById("round").value.trim();
-  const teamA  = document.getElementById("teamA").value.trim();
-  const teamB  = document.getElementById("teamB").value.trim();
-  const date   = document.getElementById("date").value;
-  const time   = document.getElementById("time").value;
-  const venue  = document.getElementById("venue").value.trim();
+          const data = await res.json();
 
-  if(!main || !type || !program || !round || !teamA || !teamB || !date || !time || !venue){
-    msg.innerHTML = "सर्व माहिती भरा";
-    return;
-  }
+          if (data.ok) {
+            document.getElementById("program").innerHTML =
+              '<option value="">खेळ / कार्यक्रम निवडा</option>';
+            document.getElementById("program").disabled = true;
 
-  try{
-    const res = await fetch(
-     `${API}?action=addVelapatrak&adminToken=${adminToken}`+
-     `&main=${encodeURIComponent(main)}`+
-`&type=${encodeURIComponent(type)}`+
-      `&program=${encodeURIComponent(program)}`+
-      `&round=${encodeURIComponent(round)}`+
-      `&teamA=${encodeURIComponent(teamA)}`+
-      `&teamB=${encodeURIComponent(teamB)}`+
-      `&date=${date}`+
-      `&time=${time}`+
-      `&venue=${encodeURIComponent(venue)}`
-    );
+            document.getElementById("main").value = "";
+            document.getElementById("type").value = "";
 
-    const data = await res.json();
+            msg.style.color = "green";
+            msg.innerHTML = "✅ वेळापत्रक यशस्वीरीत्या जतन झाले";
 
-    if(data.ok){
-      document.getElementById("program").innerHTML =
-  '<option value="">खेळ / कार्यक्रम निवडा</option>';
-document.getElementById("program").disabled = true;
-
-document.getElementById("main").value = "";
-document.getElementById("type").value = "";
-
-      msg.style.color="green";
-      msg.innerHTML = "✅ वेळापत्रक यशस्वीरीत्या जतन झाले";
-
-      document.querySelectorAll("input").forEach(i=>i.value="");
-    }else{
-  msg.style.color="red";
-  msg.innerHTML = data.message || "Error";
-}
-
-  }catch(e){
-    msg.style.color="red";
-    msg.innerHTML = "Server error";
-  }
-}
-</script>
-
-</body>
+            document.querySelectorAll("input").forEach((i) => (i.value = ""));
+          } else {
+            msg.style.color = "red";
+            msg.innerHTML = data.message || "Error";
+          }
+        } catch (e) {
+          msg.style.color = "red";
+          msg.innerHTML = "Server error";
+        }
+      }
+    </script>
+  </body>
 </html>
