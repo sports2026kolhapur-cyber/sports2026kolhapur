@@ -78,7 +78,7 @@ th{
   <input type="text" id="event" placeholder="खेळ / कार्यक्रमाचे नाव">
   <input type="text" id="name" placeholder="समन्वयक अधिकाऱ्याचे नाव">
   <input type="text" id="post" placeholder="पदनाम">
-  <input type="number" id="mobile" placeholder="संपर्क क्रमांक">
+  <input type="tel" id="mobile" maxlength="10" pattern="[0-9]{10}" placeholder="संपर्क क्रमांक">
 
   <button onclick="addEntry()">नोंद जोडा</button>
 
@@ -115,7 +115,7 @@ function addRow(d){
     <td>${d.post}</td>
     <td>${d.mobile}</td>
   `;
-  tbody.prepend(tr); // latest on top
+  tbody.prepend(tr);
 }
 
 async function addEntry(){
@@ -138,6 +138,9 @@ async function addEntry(){
   try{
     const res = await fetch(API_URL,{
       method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
       body: JSON.stringify(entry)
     });
 
@@ -145,8 +148,7 @@ async function addEntry(){
 
     if(d.ok){
       alert("नोंद यशस्वी झाली ✅");
-
-      addRow(entry); // table मध्ये लगेच दाखव
+      addRow(entry);
 
       type.value="";
       event.value="";
