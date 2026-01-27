@@ -58,12 +58,23 @@
         font-weight: 800;
         cursor: pointer;
       }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
       .logout {
         background: #7c2d12;
       }
       .success {
         margin-top: 12px;
         color: #065f46;
+        font-weight: 800;
+        display: none;
+        text-align: center;
+      }
+      .error {
+        margin-top: 12px;
+        color: #dc2626;
         font-weight: 800;
         display: none;
         text-align: center;
@@ -158,9 +169,10 @@
           </option>
         </select>
 
-        <button onclick="save()">निकाल Save / Update करा</button>
+        <button id="saveBtn" onclick="save()">निकाल Save / Update करा</button>
 
         <div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
+        <div id="error" class="error"></div>
 
         <button class="logout" onclick="logout()">Logout</button>
 
@@ -203,7 +215,9 @@
       const nameEl = document.getElementById("name");
       const officeEl = document.getElementById("office");
       const successEl = document.getElementById("success");
+      const errorEl = document.getElementById("error");
       const resultBody = document.getElementById("resultBody");
+      const saveBtn = document.getElementById("saveBtn");
 
       let editRow = null;
       if (!ADMIN_TOKEN) {
@@ -255,44 +269,10 @@
         }
       }
 
-      async function loadProgramsOld() {
-        programEl.innerHTML = `<option value="">— निवडा —</option>`;
-
-        if (!mainEl.value || !typeEl.value) return;
-
-        try {
-          const res = await fetch(
-            `${API}?action=adminPrograms` +
-              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
-              `&main=${encodeURIComponent(mainEl.value.trim())}` +
-              `&type=${encodeURIComponent(typeEl.value.trim())}` +
-              `&t=${Date.now()}`,
-          );
-
-          const list = await res.json();
-
-          if (list.length === 0) {
-            const opt = document.createElement("option");
-            opt.textContent = "⛔ कार्यक्रम उपलब्ध नाहीत";
-            opt.value = "";
-            programEl.appendChild(opt);
-            return;
-          }
-
-          list.forEach((p) => {
-            const opt = document.createElement("option");
-            opt.value = p;
-            opt.textContent = p;
-            programEl.appendChild(opt);
-          });
-        } catch (err) {
-          console.error("Program load error:", err);
-          alert("❌ कार्यक्रम load करताना अडचण आली");
-        }
-      }
-      /* 💾 save / update */
+      /* 💾 save / update - FIXED VERSION */
       async function save() {
         successEl.style.display = "none";
+        errorEl.style.display = "none";
 
         if (
           !mainEl.value ||
@@ -301,49 +281,79 @@
           !positionEl.value ||
           !nameEl.value
         ) {
-          alert("❌ सर्व माहिती भरा");
+          errorEl.textContent = "❌ सर्व माहिती भरा";
+          errorEl.style.display = "block";
           return;
         }
 
-        if (editRow) {
-          await fetch(
-            `${API}?action=deleteResult` +
-              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
-              `&row=${editRow}`,
-          );
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving...";
 
-          editRow = null;
+        try {
+          // Delete old row if editing
+          if (editRow) {
+            console.log("Deleting old row:", editRow);
+            await fetch(
+              `${API}?action=deleteResult` +
+                `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+                `&row=${editRow}`,
+            );
+            editRow = null;
+          }
+
+          const params = new URLSearchParams({
+            action: "saveResult",
+            adminToken: ADMIN_TOKEN,
+            main: mainEl.value,
+            type: typeEl.value,
+            program: programEl.value,
+            position: positionEl.value,
+            name: nameEl.value,
+            office: officeEl.value,
+          });
+
+          console.log("Saving with params:", params.toString());
+
+          const res = await fetch(`${API}?${params.toString()}`);
+
+          // Check if response is OK
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+
+          const data = await res.json();
+          console.log("Response:", data);
+
+          if (!data.ok) {
+            throw new Error(data.message || "Save failed");
+          }
+
+          successEl.style.display = "block";
+          clearForm();
+          await loadResults();
+        } catch (error) {
+          console.error("Save error:", error);
+          errorEl.textContent = "❌ Error: " + error.message;
+          errorEl.style.display = "block";
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.textContent = "निकाल Save / Update करा";
         }
-
-        const params = new URLSearchParams({
-          action: "saveResult",
-          adminToken: ADMIN_TOKEN, // 🔐 MUST
-          main: mainEl.value,
-          type: typeEl.value,
-          program: programEl.value,
-          position: positionEl.value,
-          name: nameEl.value,
-          office: officeEl.value,
-        });
-
-        await fetch(`${API}?${params.toString()}`);
-        successEl.style.display = "block";
-        clearForm();
-        loadResults();
       }
 
       /* 📋 load results */
       async function loadResults() {
-        const res = await fetch(
-          `${API}?action=adminResultList` +
-            `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`,
-        );
-        const list = await res.json();
+        try {
+          const res = await fetch(
+            `${API}?action=adminResultList` +
+              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`,
+          );
+          const list = await res.json();
 
-        resultBody.innerHTML = "";
-        list.forEach((r) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
+          resultBody.innerHTML = "";
+          list.forEach((r) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
       <td>${r.main}</td>
       <td>${r.type}</td>
       <td>${r.program}</td>
@@ -353,8 +363,11 @@
         <button class="action-btn edit" onclick='editResult(${JSON.stringify(r)})'>✏️</button>
         <button class="action-btn delete" onclick='deleteResult(${r.row})'>🗑️</button>
       </td>`;
-          resultBody.appendChild(tr);
-        });
+            resultBody.appendChild(tr);
+          });
+        } catch (error) {
+          console.error("Load results error:", error);
+        }
       }
 
       /* ✏️ edit */
@@ -364,7 +377,7 @@
         mainEl.value = r.main;
         typeEl.value = r.type;
 
-        await loadPrograms(); // 🔥 IMPORTANT
+        await loadPrograms();
 
         programEl.value = r.program;
         positionEl.value = r.position;
@@ -374,27 +387,21 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      function editResultOld(r) {
-        editRow = r.row;
-        mainEl.value = r.main;
-        typeEl.value = r.type;
-        programEl.innerHTML = `<option value="${r.program}">${r.program}</option>`;
-        positionEl.value = r.position;
-        nameEl.value = r.name;
-        officeEl.value = r.office;
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
       /* 🗑️ delete */
       async function deleteResult(row) {
         if (!confirm("हा निकाल delete करायचा आहे का?")) return;
-        await fetch(
-          `${API}?action=deleteResult` +
-            `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
-            `&row=${row}`,
-        );
 
-        loadResults();
+        try {
+          await fetch(
+            `${API}?action=deleteResult` +
+              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+              `&row=${row}`,
+          );
+          await loadResults();
+        } catch (error) {
+          console.error("Delete error:", error);
+          alert("❌ Delete करताना अडचण आली");
+        }
       }
 
       /* utils */
@@ -406,10 +413,10 @@
         nameEl.value = "";
         officeEl.value = "";
       }
+
       function logout() {
         sessionStorage.removeItem("adminLogged");
         sessionStorage.removeItem("adminToken");
-
         location.href = "dashboard.html";
       }
 

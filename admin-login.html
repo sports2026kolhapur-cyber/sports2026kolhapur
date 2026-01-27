@@ -1,109 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mr">
-<head>
-<meta charset="UTF-8">
-<title>Admin Login – निकाल व्यवस्थापन</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Login – निकाल व्यवस्थापन</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f1f5f9;
-  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
-}
-.card{
-  background:#fff;
-  padding:30px;
-  border-radius:14px;
-  width:100%;
-  max-width:360px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  text-align:center;
-}
-h1{
-  margin-top:0;
-  color:#1e40af;
-}
-input{
-  width:100%;
-  padding:14px;
-  margin-top:20px;
-  font-size:16px;
-  border-radius:10px;
-  border:1.8px solid #cbd5e1;
-}
-button{
-  width:100%;
-  margin-top:20px;
-  padding:14px;
-  border:none;
-  border-radius:10px;
-  background:#1e40af;
-  color:#fff;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-}
-.error{
-  margin-top:16px;
-  color:#b91c1c;
-  font-weight:700;
-  display:none;
-}
-</style>
-</head>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f1f5f9;
+        font-family: "Noto Sans Devanagari", "Mukta", system-ui, sans-serif;
+      }
+      .card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 360px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        text-align: center;
+      }
+      h1 {
+        margin-top: 0;
+        color: #1e40af;
+      }
+      input {
+        width: 100%;
+        padding: 14px;
+        margin-top: 20px;
+        font-size: 16px;
+        border-radius: 10px;
+        border: 1.8px solid #cbd5e1;
+      }
+      button {
+        width: 100%;
+        margin-top: 20px;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: #1e40af;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .error {
+        margin-top: 16px;
+        color: #b91c1c;
+        font-weight: 700;
+        display: none;
+      }
+    </style>
+  </head>
 
-<body>
-<div class="card">
-  <h1>🔐 Admin Login</h1>
-  <p>निकाल भरण्यासाठी Admin Code टाका</p>
+  <body>
+    <div class="card">
+      <h1>🔐 Admin Login</h1>
+      <p>निकाल भरण्यासाठी Admin Code टाका</p>
 
-  <input type="password" id="adminCode" placeholder="Admin Code">
+      <input type="password" id="adminCode" placeholder="Admin Code" />
 
-  <button onclick="login()">Login</button>
+      <button onclick="login()">Login</button>
 
-  <div id="error" class="error">❌ चुकीचा Admin Code</div>
-</div>
+      <div id="error" class="error">❌ चुकीचा Admin Code</div>
+    </div>
 
-<script>
-const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+    <script>
+      const API =
+        "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-async function login(){
-  console.log("LOGIN PAGE VERSION 2026"); // debug
+      async function login() {
+        console.log("LOGIN PAGE VERSION 2026"); // debug
 
-  const adminCode = document.getElementById("adminCode").value.trim();
-  if(!adminCode) return;
+        const adminCode = document.getElementById("adminCode").value.trim();
+        if (!adminCode) return;
 
-  try{
-    const res = await fetch(
-      `${API}?action=adminLogin&code=${encodeURIComponent(adminCode)}`
-    );
-    const data = await res.json();
+        try {
+          const res = await fetch(
+            `${API}?action=adminLogin&code=${encodeURIComponent(adminCode)}`,
+          );
+          const data = await res.json();
 
-    if(data.ok){
-      sessionStorage.setItem("adminLogged","1");
-      sessionStorage.setItem("adminToken", data.adminToken);
+          if (data.ok) {
+            sessionStorage.setItem("adminLogged", "1");
+            sessionStorage.setItem("adminToken", data.adminToken);
 
-      console.log("AFTER SET:");
-      console.log("adminLogged =", sessionStorage.getItem("adminLogged"));
-      console.log("adminToken =", sessionStorage.getItem("adminToken"));
+            console.log("AFTER SET:");
+            console.log("adminLogged =", sessionStorage.getItem("adminLogged"));
+            console.log("adminToken =", sessionStorage.getItem("adminToken"));
 
-      // ✅ आता redirect safe आहे
-      window.location.href = "admin-options.html";
-
-    }else{
-      document.getElementById("error").style.display="block";
-    }
-
-  }catch(err){
-    console.error("Login error:", err);
-    alert("❌ Server error");
-  }
-}
-</script>
-</body>
+            // ✅ आता redirect safe आहे
+            window.location.href = "admin-options.html";
+          } else {
+            document.getElementById("error").style.display = "block";
+          }
+        } catch (err) {
+          console.error("Login error:", err);
+          alert("❌ Server error");
+        }
+      }
+    </script>
+  </body>
 </html>
