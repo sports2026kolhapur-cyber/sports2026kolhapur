@@ -1,285 +1,349 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mr">
-<head>
-<meta charset="UTF-8">
-<title>Admin Panel – निकाल भरणे</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Panel – निकाल भरणे</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-:root{
-  --primary:#1e40af;
-  --bg:#f1f5f9;
-  --card:#ffffff;
-}
-body{
-  margin:0;
-  padding:16px;
-  background:var(--bg);
-  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
-}
-.container{max-width:720px;margin:auto;}
-.card{
-  background:var(--card);
-  padding:24px;
-  border-radius:14px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.12);
-}
-h1,h2{text-align:center;color:var(--primary);}
-label{font-weight:700;margin-top:14px;display:block;}
-select,input{
-  width:100%;
-  padding:12px;
-  margin-top:6px;
-  border-radius:10px;
-  border:1.8px solid #cbd5e1;
-  font-size:15px;
-}
-button{
-  width:100%;
-  margin-top:20px;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:var(--primary);
-  color:#fff;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
-}
-.logout{background:#7c2d12;}
-.success{
-  margin-top:12px;
-  color:#065f46;
-  font-weight:800;
-  display:none;
-  text-align:center;
-}
+    <style>
+      :root {
+        --primary: #1e40af;
+        --bg: #f1f5f9;
+        --card: #ffffff;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--bg);
+        font-family: "Noto Sans Devanagari", "Mukta", system-ui, sans-serif;
+      }
+      .container {
+        max-width: 720px;
+        margin: auto;
+      }
+      .card {
+        background: var(--card);
+        padding: 24px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: var(--primary);
+      }
+      label {
+        font-weight: 700;
+        margin-top: 14px;
+        display: block;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        border-radius: 10px;
+        border: 1.8px solid #cbd5e1;
+        font-size: 15px;
+      }
+      button {
+        width: 100%;
+        margin-top: 20px;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .logout {
+        background: #7c2d12;
+      }
+      .success {
+        margin-top: 12px;
+        color: #065f46;
+        font-weight: 800;
+        display: none;
+        text-align: center;
+      }
 
-/* table */
-table{width:100%;border-collapse:collapse;margin-top:18px;}
-th,td{border:1px solid #cbd5e1;padding:8px;text-align:center;}
-th{background:#e5e7eb;}
-.action-btn{padding:6px 10px;margin:2px;font-size:14px;border-radius:8px;}
-.edit{background:#0ea5e9;color:#fff;}
-.delete{background:#dc2626;color:#fff;}
-</style>
-</head>
+      /* table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+      }
+      th,
+      td {
+        border: 1px solid #cbd5e1;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background: #e5e7eb;
+      }
+      .action-btn {
+        padding: 6px 10px;
+        margin: 2px;
+        font-size: 14px;
+        border-radius: 8px;
+      }
+      .edit {
+        background: #0ea5e9;
+        color: #fff;
+      }
+      .delete {
+        background: #dc2626;
+        color: #fff;
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>🏆 निकाल भरणे (Admin)</h1>
 
-<div class="container">
-<div class="card">
+        <label>कार्यक्रम प्रकार</label>
+        <select id="main">
+          <option value="">— निवडा —</option>
+          <option value="sports">क्रीडा</option>
+          <option value="cultural">सांस्कृतिक</option>
+        </select>
 
-<h1>🏆 निकाल भरणे (Admin)</h1>
+        <label>सहभाग प्रकार</label>
+        <select id="type">
+          <option value="">— निवडा —</option>
+          <option value="individual">वैयक्तिक</option>
+          <option value="duheri">दुहेरी</option>
+          <option value="team">सांघिक</option>
+        </select>
 
-<label>कार्यक्रम प्रकार</label>
-<select id="main">
-  <option value="">— निवडा —</option>
-  <option value="क्रीडा">क्रीडा</option>
-  <option value="सांस्कृतिक">सांस्कृतिक</option>
-</select>
+        <label>खेळ / कार्यक्रम</label>
+        <select id="program">
+          <option value="">— निवडा —</option>
+        </select>
 
-<label>सहभाग प्रकार</label>
-<select id="type">
-  <option value="">— निवडा —</option>
-  <option value="वैयक्तिक">वैयक्तिक</option>
-  <option value="दुहेरी">दुहेरी</option>
-  <option value="सांघिक">सांघिक</option>
-</select>
+        <label>क्रमांक</label>
+        <select id="position">
+          <option value="">— निवडा —</option>
+          <option value="प्रथम">प्रथम</option>
+          <option value="द्वितीय">द्वितीय</option>
+          <option value="तृतीय">तृतीय</option>
+        </select>
 
-<label>खेळ / कार्यक्रम</label>
-<select id="program">
-  <option value="">— निवडा —</option>
-</select>
+        <label>विजेता नाव ( / वापरू शकता )</label>
+        <input id="name" placeholder="नाव1 / नाव2 / नाव3" />
 
-<label>क्रमांक</label>
-<select id="position">
-  <option value="">— निवडा —</option>
-  <option value="प्रथम">प्रथम</option>
-  <option value="द्वितीय">द्वितीय</option>
-  <option value="तृतीय">तृतीय</option>
-</select>
+        <label>मंडळ कार्यालय</label>
+        <select id="office">
+          <option value="">— निवडा —</option>
 
-<label>विजेता नाव ( / वापरू शकता )</label>
-<input id="name" placeholder="नाव1 / नाव2 / नाव3">
+          <option value="यांत्रिकी मंडळ, कोल्हापूर">
+            यांत्रिकी मंडळ, कोल्हापूर
+          </option>
 
-<label>मंडळ कार्यालय</label>
-<select id="office">
-  <option value="">— निवडा —</option>
+          <option value="यांत्रिकी मंडळ, पुणे">यांत्रिकी मंडळ, पुणे</option>
 
-  <option value="यांत्रिकी मंडळ, कोल्हापूर">
-    यांत्रिकी मंडळ, कोल्हापूर
-  </option>
+          <option value="यांत्रिकी मंडळ, नाशिक">यांत्रिकी मंडळ, नाशिक</option>
 
-  <option value="यांत्रिकी मंडळ, पुणे">
-    यांत्रिकी मंडळ, पुणे
-  </option>
+          <option value="यांत्रिकी मंडळ, नांदेड">यांत्रिकी मंडळ, नांदेड</option>
 
-  <option value="यांत्रिकी मंडळ, नाशिक">
-    यांत्रिकी मंडळ, नाशिक
-  </option>
+          <option value="यांत्रिकी मंडळ, नागपूर">यांत्रिकी मंडळ, नागपूर</option>
 
-  <option value="यांत्रिकी मंडळ, नांदेड">
-    यांत्रिकी मंडळ, नांदेड
-  </option>
+          <option value="पाटबंधारे संशोधन व विकास संचालनालय, पुणे">
+            पाटबंधारे संशोधन व विकास संचालनालय, पुणे
+          </option>
+        </select>
 
-  <option value="यांत्रिकी मंडळ, नागपूर">
-    यांत्रिकी मंडळ, नागपूर
-  </option>
+        <button onclick="save()">निकाल Save / Update करा</button>
 
-  <option value="पाटबंधारे संशोधन व विकास संचालनालय, पुणे">
-    पाटबंधारे संशोधन व विकास संचालनालय, पुणे
-  </option>
-</select>
+        <div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
 
+        <button class="logout" onclick="logout()">Logout</button>
 
-<button onclick="save()">निकाल Save / Update करा</button>
+        <hr style="margin: 28px 0" />
 
-<div id="success" class="success">✅ निकाल यशस्वीरीत्या सेव्ह झाला</div>
+        <h2>📋 सध्याचे निकाल</h2>
 
-<button class="logout" onclick="logout()">Logout</button>
+        <table>
+          <thead>
+            <tr>
+              <th>कार्यक्रम</th>
+              <th>सहभाग</th>
+              <th>खेळ</th>
+              <th>क्रमांक</th>
+              <th>विजेता</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="resultBody"></tbody>
+        </table>
+      </div>
+    </div>
 
-<hr style="margin:28px 0">
+    <script>
+      const API =
+        "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-<h2>📋 सध्याचे निकाल</h2>
+      const ADMIN_TOKEN = sessionStorage.getItem("adminToken");
 
-<table>
-<thead>
-<tr>
-<th>कार्यक्रम</th>
-<th>सहभाग</th>
-<th>खेळ</th>
-<th>क्रमांक</th>
-<th>विजेता</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="resultBody"></tbody>
-</table>
+      /* 🔐 login guard */
+      if (sessionStorage.getItem("adminLogged") !== "1") {
+        location.href = "admin-login.html";
+      }
 
-</div>
-</div>
+      /* 🔗 elements */
+      const mainEl = document.getElementById("main");
+      const typeEl = document.getElementById("type");
+      const programEl = document.getElementById("program");
+      const positionEl = document.getElementById("position");
+      const nameEl = document.getElementById("name");
+      const officeEl = document.getElementById("office");
+      const successEl = document.getElementById("success");
+      const resultBody = document.getElementById("resultBody");
 
-<script>
-const API="https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
-  
-const ADMIN_TOKEN = sessionStorage.getItem("adminToken");
+      let editRow = null;
+      if (!ADMIN_TOKEN) {
+        alert("⛔ Admin session expired");
+        location.href = "admin-login.html";
+      }
 
-/* 🔐 login guard */
-if(sessionStorage.getItem("adminLogged")!=="1"){
-  location.href="admin-login.html";
-}
+      /* 🔁 load programs from माहिती sheet */
+      mainEl.addEventListener("change", loadPrograms);
+      typeEl.addEventListener("change", loadPrograms);
 
-/* 🔗 elements */
-const mainEl     = document.getElementById("main");
-const typeEl     = document.getElementById("type");
-const programEl  = document.getElementById("program");
-const positionEl = document.getElementById("position");
-const nameEl     = document.getElementById("name");
-const officeEl   = document.getElementById("office");
-const successEl  = document.getElementById("success");
-const resultBody = document.getElementById("resultBody");
+      async function loadPrograms() {
+        programEl.innerHTML = `<option value="">लोड होत आहे...</option>`;
+        programEl.disabled = true;
 
-let editRow = null;
-if (!ADMIN_TOKEN) {
-  alert("⛔ Admin session expired");
-  location.href = "admin-login.html";
-}
+        if (!mainEl.value || !typeEl.value) {
+          programEl.innerHTML = `<option value="">— निवडा —</option>`;
+          return;
+        }
 
-/* 🔁 load programs from माहिती sheet */
-mainEl.addEventListener("change", loadPrograms);
-typeEl.addEventListener("change", loadPrograms);
+        try {
+          const res = await fetch(
+            `${API}?action=velapatrakPrograms` +
+              `&main=${encodeURIComponent(mainEl.value)}` +
+              `&type=${encodeURIComponent(typeEl.value)}` +
+              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`,
+          );
 
-async function loadPrograms(){
-  programEl.innerHTML = `<option value="">— निवडा —</option>`;
+          const list = await res.json();
 
-  if(!mainEl.value || !typeEl.value) return;
+          programEl.innerHTML = `<option value="">— निवडा —</option>`;
 
-  try{
-    const res = await fetch(
-  `${API}?action=adminPrograms` +
-  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
-  `&main=${encodeURIComponent(mainEl.value.trim())}` +
-  `&type=${encodeURIComponent(typeEl.value.trim())}` +
-  `&t=${Date.now()}`
-);
+          if (list.length === 0) {
+            programEl.innerHTML = `<option value="">⛔ कार्यक्रम उपलब्ध नाहीत</option>`;
+            return;
+          }
 
-    const list = await res.json();
+          list.forEach((p) => {
+            const opt = document.createElement("option");
+            opt.value = p;
+            opt.textContent = p;
+            programEl.appendChild(opt);
+          });
 
-    if(list.length === 0){
-      const opt = document.createElement("option");
-      opt.textContent = "⛔ कार्यक्रम उपलब्ध नाहीत";
-      opt.value = "";
-      programEl.appendChild(opt);
-      return;
-    }
+          programEl.disabled = false;
+        } catch (e) {
+          console.error(e);
+          programEl.innerHTML = `<option value="">❌ Server Error</option>`;
+        }
+      }
 
-    list.forEach(p=>{
-      const opt = document.createElement("option");
-      opt.value = p;
-      opt.textContent = p;
-      programEl.appendChild(opt);
-    });
+      async function loadProgramsOld() {
+        programEl.innerHTML = `<option value="">— निवडा —</option>`;
 
-  }catch(err){
-    console.error("Program load error:", err);
-    alert("❌ कार्यक्रम load करताना अडचण आली");
-  }
-}
-/* 💾 save / update */
-async function save(){
-  successEl.style.display="none";
+        if (!mainEl.value || !typeEl.value) return;
 
-  if(
-    !mainEl.value ||
-    !typeEl.value ||
-    !programEl.value ||
-    !positionEl.value ||
-    !nameEl.value
-  ){
-    alert("❌ सर्व माहिती भरा");
-    return;
-  }
+        try {
+          const res = await fetch(
+            `${API}?action=adminPrograms` +
+              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+              `&main=${encodeURIComponent(mainEl.value.trim())}` +
+              `&type=${encodeURIComponent(typeEl.value.trim())}` +
+              `&t=${Date.now()}`,
+          );
 
-  if(editRow){
-    await fetch(
-  `${API}?action=deleteResult` +
-  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
-  `&row=${editRow}`
-);
+          const list = await res.json();
 
-    editRow=null;
-  }
+          if (list.length === 0) {
+            const opt = document.createElement("option");
+            opt.textContent = "⛔ कार्यक्रम उपलब्ध नाहीत";
+            opt.value = "";
+            programEl.appendChild(opt);
+            return;
+          }
 
-  const params=new URLSearchParams({
-  action:"saveResult",
-  adminToken: ADMIN_TOKEN,   // 🔐 MUST
-  main:mainEl.value,
-  type:typeEl.value,
-  program:programEl.value,
-  position:positionEl.value,
-  name:nameEl.value,
-  office:officeEl.value
-});
+          list.forEach((p) => {
+            const opt = document.createElement("option");
+            opt.value = p;
+            opt.textContent = p;
+            programEl.appendChild(opt);
+          });
+        } catch (err) {
+          console.error("Program load error:", err);
+          alert("❌ कार्यक्रम load करताना अडचण आली");
+        }
+      }
+      /* 💾 save / update */
+      async function save() {
+        successEl.style.display = "none";
 
-  await fetch(`${API}?${params.toString()}`);
-  successEl.style.display="block";
-  clearForm();
-  loadResults();
-}
+        if (
+          !mainEl.value ||
+          !typeEl.value ||
+          !programEl.value ||
+          !positionEl.value ||
+          !nameEl.value
+        ) {
+          alert("❌ सर्व माहिती भरा");
+          return;
+        }
 
-/* 📋 load results */
-async function loadResults(){
- const res = await fetch(
-  `${API}?action=adminResultList` +
-  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`
-);
-  const list=await res.json();
+        if (editRow) {
+          await fetch(
+            `${API}?action=deleteResult` +
+              `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+              `&row=${editRow}`,
+          );
 
-  resultBody.innerHTML="";
-  list.forEach(r=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
+          editRow = null;
+        }
+
+        const params = new URLSearchParams({
+          action: "saveResult",
+          adminToken: ADMIN_TOKEN, // 🔐 MUST
+          main: mainEl.value,
+          type: typeEl.value,
+          program: programEl.value,
+          position: positionEl.value,
+          name: nameEl.value,
+          office: officeEl.value,
+        });
+
+        await fetch(`${API}?${params.toString()}`);
+        successEl.style.display = "block";
+        clearForm();
+        loadResults();
+      }
+
+      /* 📋 load results */
+      async function loadResults() {
+        const res = await fetch(
+          `${API}?action=adminResultList` +
+            `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}`,
+        );
+        const list = await res.json();
+
+        resultBody.innerHTML = "";
+        list.forEach((r) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
       <td>${r.main}</td>
       <td>${r.type}</td>
       <td>${r.program}</td>
@@ -289,54 +353,70 @@ async function loadResults(){
         <button class="action-btn edit" onclick='editResult(${JSON.stringify(r)})'>✏️</button>
         <button class="action-btn delete" onclick='deleteResult(${r.row})'>🗑️</button>
       </td>`;
-    resultBody.appendChild(tr);
-  });
-}
+          resultBody.appendChild(tr);
+        });
+      }
 
-/* ✏️ edit */
-function editResult(r){
-  editRow=r.row;
-  mainEl.value=r.main;
-  typeEl.value=r.type;
-  programEl.innerHTML=`<option value="${r.program}">${r.program}</option>`;
-  positionEl.value=r.position;
-  nameEl.value=r.name;
-  officeEl.value=r.office;
-  window.scrollTo({top:0,behavior:"smooth"});
-}
+      /* ✏️ edit */
+      async function editResult(r) {
+        editRow = r.row;
 
-/* 🗑️ delete */
-async function deleteResult(row){
-  if(!confirm("हा निकाल delete करायचा आहे का?")) return;
-  await fetch(
-  `${API}?action=deleteResult` +
-  `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
-  `&row=${row}`
-);
+        mainEl.value = r.main;
+        typeEl.value = r.type;
 
-  loadResults();
-}
+        await loadPrograms(); // 🔥 IMPORTANT
 
-/* utils */
-function clearForm(){
-  mainEl.value="";
-  typeEl.value="";
-  programEl.innerHTML=`<option value="">— निवडा —</option>`;
-  positionEl.value="";
-  nameEl.value="";
-  officeEl.value="";
-}
-function logout(){
- sessionStorage.removeItem("adminLogged");
-sessionStorage.removeItem("adminToken");
+        programEl.value = r.program;
+        positionEl.value = r.position;
+        nameEl.value = r.name;
+        officeEl.value = r.office;
 
-  location.href="dashboard.html";
-}
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
 
-/* init */
-window.addEventListener("DOMContentLoaded", () => {
-  loadResults();
-});
-</script>
-</body>
+      function editResultOld(r) {
+        editRow = r.row;
+        mainEl.value = r.main;
+        typeEl.value = r.type;
+        programEl.innerHTML = `<option value="${r.program}">${r.program}</option>`;
+        positionEl.value = r.position;
+        nameEl.value = r.name;
+        officeEl.value = r.office;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      /* 🗑️ delete */
+      async function deleteResult(row) {
+        if (!confirm("हा निकाल delete करायचा आहे का?")) return;
+        await fetch(
+          `${API}?action=deleteResult` +
+            `&adminToken=${encodeURIComponent(ADMIN_TOKEN)}` +
+            `&row=${row}`,
+        );
+
+        loadResults();
+      }
+
+      /* utils */
+      function clearForm() {
+        mainEl.value = "";
+        typeEl.value = "";
+        programEl.innerHTML = `<option value="">— निवडा —</option>`;
+        positionEl.value = "";
+        nameEl.value = "";
+        officeEl.value = "";
+      }
+      function logout() {
+        sessionStorage.removeItem("adminLogged");
+        sessionStorage.removeItem("adminToken");
+
+        location.href = "dashboard.html";
+      }
+
+      /* init */
+      window.addEventListener("DOMContentLoaded", () => {
+        loadResults();
+      });
+    </script>
+  </body>
 </html>
