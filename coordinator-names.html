@@ -69,6 +69,11 @@ th{
 <div class="card">
   <h2>समन्वयक अधिकाऱ्यांची माहिती भरा</h2>
 
+  <!-- ✅ कार्यालय -->
+  <select id="office">
+    <option value="">कार्यालय निवडा</option>
+  </select>
+
   <select id="type">
     <option value="">कार्यक्रम प्रकार निवडा</option>
     <option>क्रीडा स्पर्धा</option>
@@ -104,6 +109,22 @@ if(sessionStorage.getItem("coordAuth") !== "1"){
 
 const API_URL = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
+// ✅ offices load
+async function loadOffices(){
+  const res = await fetch(API_URL + "?action=offices");
+  const offices = await res.json();
+
+  const sel = document.getElementById("office");
+  offices.forEach(o=>{
+    const op = document.createElement("option");
+    op.value = o;
+    op.textContent = o;
+    sel.appendChild(op);
+  });
+}
+
+loadOffices();
+
 // table render helper
 function addRow(d){
   const tbody = document.querySelector("#dataTable tbody");
@@ -122,15 +143,15 @@ async function addEntry(){
 
   const entry = {
     action: "addCoordinator",
+    office: office.value.trim(),
     type: type.value.trim(),
     event: event.value.trim(),
     name: name.value.trim(),
     post: post.value.trim(),
-    mobile: mobile.value.trim(),
-    by: "Coordinator Admin"
+    mobile: mobile.value.trim()
   };
 
-  if(!entry.type || !entry.event || !entry.name){
+  if(!entry.office || !entry.type || !entry.event || !entry.name){
     alert("सर्व माहिती भरा");
     return;
   }
@@ -150,6 +171,7 @@ async function addEntry(){
       alert("नोंद यशस्वी झाली ✅");
       addRow(entry);
 
+      office.value="";
       type.value="";
       event.value="";
       name.value="";
