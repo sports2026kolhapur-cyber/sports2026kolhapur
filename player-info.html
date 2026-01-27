@@ -208,22 +208,45 @@
         document.getElementById("tbl").style.display = "table";
       }
 
-      function downloadExcel() {
-        if (playerData.length === 0) return;
+      function downloadExcel(){
+  if(playerData.length===0) return;
 
-        let csv = "नाव,पदनाम\n";
-        playerData.forEach((p) => {
-          csv += `"${p.name}","${p.designation}"\n`;
-        });
+  const officeText = officeSelect.options[officeSelect.selectedIndex].text;
 
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
+  const mainText =
+    mainSelect.value === "sports" ? "क्रीडा" : "सांस्कृतिक";
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "players_list.csv";
-        a.click();
-      }
+  const typeText =
+    typeSelect.value === "individual" ? "वैयक्तिक" :
+    typeSelect.value === "duheri" ? "दुहेरी" : "सांघिक";
+
+  const programText = programSelect.value;
+
+  let csv = "";
+
+  // 🔹 Header Info
+  csv += `मंडळ कार्यालय:,${officeText}\n`;
+  csv += `कार्यक्रम प्रकार:,${mainText}\n`;
+  csv += `सहभाग प्रकार:,${typeText}\n`;
+  csv += `खेळ / कार्यक्रम:,${programText}\n\n`;
+
+  // 🔹 Table Header
+  csv += "नाव,पदनाम\n";
+
+  // 🔹 Players
+  playerData.forEach(p=>{
+    csv += `"${p.name}","${p.designation}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "players_list.csv";
+  a.click();
+}
+
     </script>
   </body>
 </html>
