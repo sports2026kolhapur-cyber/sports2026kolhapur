@@ -16,45 +16,45 @@ body{
 .header{
   background:#9333ea;
   color:#fff;
-  padding:22px;
-  border-radius:16px;
+  padding:20px;
+  border-radius:14px;
   text-align:center;
+  margin-bottom:20px;
 }
 .card{
-  margin-top:24px;
   background:#fff;
-  padding:22px;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 select,button{
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  border-radius:10px;
-  font-size:15px;
+  padding:10px;
+  border-radius:8px;
+  margin:6px 4px;
+  font-size:16px;
 }
 button{
-  background:#16a34a;
+  background:#0f766e;
   color:#fff;
   border:none;
-  font-weight:700;
   cursor:pointer;
 }
 table{
   width:100%;
-  border-collapse:collapse;
   margin-top:20px;
+  border-collapse:collapse;
 }
 th,td{
   border:1px solid #ddd;
   padding:10px;
   text-align:left;
 }
-th{background:#f3f4f6;}
+th{
+  background:#e2e8f0;
+}
 .download{
-  background:#0ea5e9;
-  margin-top:12px;
+  margin-top:15px;
+  background:#16a34a;
 }
 </style>
 </head>
@@ -63,7 +63,8 @@ th{background:#f3f4f6;}
 
 <div class="container">
   <div class="header">
-    <h2>🧾 नोंदणीकृत खेळाडू माहिती</h2>
+    <h2>खेळाडू नोंदणी माहिती</h2>
+    <p>कार्यक्रम निवडा आणि नोंदणीकृत खेळाडू पाहा</p>
   </div>
 
   <div class="card">
@@ -74,7 +75,7 @@ th{background:#f3f4f6;}
       <option value="cultural">सांस्कृतिक</option>
     </select>
 
-    <select id="type">
+    <select id="type" onchange="loadPrograms()">
       <option value="">सहभाग प्रकार</option>
       <option value="individual">वैयक्तिक</option>
       <option value="duheri">दुहेरी</option>
@@ -86,9 +87,8 @@ th{background:#f3f4f6;}
     </select>
 
     <button onclick="loadPlayers()">खेळाडू पहा</button>
-    <button class="download" onclick="downloadExcel()">Excel डाउनलोड करा</button>
 
-    <table id="tbl" style="display:none;">
+    <table id="tbl" style="display:none">
       <thead>
         <tr>
           <th>नाव</th>
@@ -98,16 +98,19 @@ th{background:#f3f4f6;}
       <tbody></tbody>
     </table>
 
+    <button class="download" onclick="downloadExcel()">Excel Download</button>
+
   </div>
 </div>
 
 <script>
-const API = "YOUR_SCRIPT_URL_HERE";
-let playerData = [];
+const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
-// programs dropdown
-document.getElementById("type").addEventListener("change", loadPrograms);
-document.getElementById("main").addEventListener("change", loadPrograms);
+const mainSelect    = document.getElementById("main");
+const typeSelect    = document.getElementById("type");
+const programSelect = document.getElementById("program");
+
+let playerData = [];
 
 async function loadPrograms(){
   const main = mainSelect.value;
@@ -117,18 +120,20 @@ async function loadPrograms(){
   const res = await fetch(`${API}?action=programs&main=${main}&type=${type}`);
   const list = await res.json();
 
-  program.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
+  programSelect.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
+
   list.forEach(p=>{
     const o = document.createElement("option");
-    o.value=p; o.textContent=p;
-    program.appendChild(o);
+    o.value=p;
+    o.textContent=p;
+    programSelect.appendChild(o);
   });
 }
 
 async function loadPlayers(){
   const main = mainSelect.value;
   const type = typeSelect.value;
-  const prog = program.value;
+  const prog = programSelect.value;
 
   if(!main || !type || !prog) return;
 
@@ -151,15 +156,19 @@ async function loadPlayers(){
 }
 
 function downloadExcel(){
-  let csv="नाव,पदनाम\n";
+  if(playerData.length===0) return;
+
+  let csv = "नाव,पदनाम\n";
   playerData.forEach(p=>{
-    csv+=`${p.name},${p.designation}\n`;
+    csv += `"${p.name}","${p.designation}"\n`;
   });
 
-  const blob=new Blob([csv],{type:"text/csv"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="players.csv";
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "players_list.csv";
   a.click();
 }
 </script>
