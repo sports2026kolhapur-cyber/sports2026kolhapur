@@ -882,13 +882,13 @@ function getPlayerFromRow(row){
 }
   function getCulturalPlayerFromRow(row){
   return {
-    firstName: norm(row.querySelector("input[name='cFirstName[]']")?.value),
-    middleName: norm(row.querySelector("input[name='cMiddleName[]']")?.value),
-    lastName: norm(row.querySelector("input[name='cLastName[]']")?.value),
-    arrivalDate: row.querySelector("input[name='cArrivalDate[]']")?.value || "",
-    gender: row.querySelector("select[name='cGender[]']")?.value || "",
-    designation: row.querySelector("select[name='cPadnaam[]']")?.value || "",
-    mobile: norm(row.querySelector("input[name='cMobile[]']")?.value)
+    firstName: norm(row.querySelector("input[type='text']:nth-of-type(1)")?.value),
+    middleName: norm(row.querySelector("input[type='text']:nth-of-type(2)")?.value),
+    lastName: norm(row.querySelector("input[type='text']:nth-of-type(3)")?.value),
+    arrivalDate: row.querySelector("input[type='date']")?.value || "",
+    gender: row.querySelector("select:nth-of-type(1)")?.value || "",
+    designation: row.querySelector("select:nth-of-type(2)")?.value || "",
+    mobile: norm(row.querySelector("input[type='tel']")?.value)
   };
 }
 function validateMarathiFieldsBeforeSubmit(){
@@ -1081,7 +1081,7 @@ function addPlayer(){
     <input type="text" name="playerLastName[]" placeholder="खेळाडू आडनाव" data-marathi="1"
            pattern="[\\u0900-\\u097F\\s]+"
            title="फक्त मराठी अक्षरं वापरा" data-msg-required="कृपया खेळाडूचे आडनाव भरा." data-msg-pattern="फक्त मराठीत भरा.">
-    <input type="date" placeholder="तारीख" title="तारीख आवश्यक आहे" data-msg-required="कृपया पोहोचण्याची तारीख निवडा.">
+    <input type="date" required title="तारीख आवश्यक आहे" data-msg-required="कृपया पोहोचण्याची तारीख निवडा.">
 <!-- ✅ Gender -->
     <select name="playerGender[]" class="genderField">
       <option value="">— लिंग —</option>
@@ -1219,7 +1219,7 @@ function addCulturalPlayer(){
     <input type="text" name="cLastName[]"placeholder="कलाकार आडनाव" data-marathi="1"
            pattern="[\\u0900-\\u097F\\s]+"
            title="फक्त मराठी अक्षरं वापरा" data-msg-required="कृपया कलाकाराचे आडनाव भरा." data-msg-pattern="फक्त मराठीत भरा.">
-    <input type="date" name="cArrivalDate[]"placeholder="तारीख" title="तारीख आवश्यक आहे" data-msg-required="कृपया पोहोचण्याची तारीख निवडा.">
+   <input type="date" name="cArrivalDate[]" required title="तारीख आवश्यक आहे">
 <!-- ✅ Gender -->
     <select name="cGender[]" class="cGenderField">
       <option value="">— लिंग —</option>
