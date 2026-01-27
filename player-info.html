@@ -1,224 +1,229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mr">
-<head>
-<meta charset="UTF-8">
-<title>खेळाडू माहिती</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>खेळाडू माहिती</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body{
-  margin:0;
-  font-family:"Noto Sans Devanagari","Mukta",system-ui,sans-serif;
-  background:#f1f5f9;
-  padding:20px;
-}
-.container{max-width:900px;margin:auto;}
-.header{
-  background:#9333ea;
-  color:#fff;
-  padding:20px;
-  border-radius:14px;
-  text-align:center;
-  margin-bottom:20px;
-}
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
-select,button{
-  padding:10px;
-  border-radius:8px;
-  margin:6px 4px;
-  font-size:16px;
-}
-button{
-  background:#0f766e;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-table{
-  width:100%;
-  margin-top:20px;
-  border-collapse:collapse;
-}
-th,td{
-  border:1px solid #ddd;
-  padding:10px;
-  text-align:left;
-}
-th{
-  background:#e2e8f0;
-}
-.download{
-  margin-top:15px;
-  background:#16a34a;
-}
-</style>
-</head>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Noto Sans Devanagari", "Mukta", system-ui, sans-serif;
+        background: #f1f5f9;
+        padding: 20px;
+      }
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+      .header {
+        background: #9333ea;
+        color: #fff;
+        padding: 20px;
+        border-radius: 14px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      select,
+      button {
+        padding: 10px;
+        border-radius: 8px;
+        margin: 6px 4px;
+        font-size: 16px;
+      }
+      button {
+        background: #0f766e;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background: #e2e8f0;
+      }
+      .download {
+        margin-top: 15px;
+        background: #16a34a;
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>खेळाडू नोंदणी माहिती</h2>
+        <p>कार्यक्रम निवडा आणि नोंदणीकृत खेळाडू पाहा</p>
+      </div>
 
-<div class="container">
-  <div class="header">
-    <h2>खेळाडू नोंदणी माहिती</h2>
-    <p>कार्यक्रम निवडा आणि नोंदणीकृत खेळाडू पाहा</p>
-  </div>
+      <div class="card">
+        <select id="office" onchange="loadPrograms()">
+          <option value="">मंडळ कार्यालय</option>
+        </select>
 
-  <div class="card">
-<select id="office">
-  <option value="">मंडळ कार्यालय</option>
-</select>
+        <select id="main" onchange="loadPrograms()">
+          <option value="">कार्यक्रम प्रकार</option>
+          <option value="sports">क्रीडा</option>
+          <option value="cultural">सांस्कृतिक</option>
+        </select>
 
-   <select id="main" onchange="loadPrograms()">
-      <option value="">कार्यक्रम प्रकार</option>
-      <option value="sports">क्रीडा</option>
-      <option value="cultural">सांस्कृतिक</option>
-    </select>
+        <select id="type" onchange="loadPrograms()">
+          <option value="">सहभाग प्रकार</option>
+          <option value="individual">वैयक्तिक</option>
+          <option value="duheri">दुहेरी</option>
+          <option value="team">सांघिक</option>
+        </select>
 
-    <select id="type" onchange="loadPrograms()">
-      <option value="">सहभाग प्रकार</option>
-      <option value="individual">वैयक्तिक</option>
-      <option value="duheri">दुहेरी</option>
-      <option value="team">सांघिक</option>
-    </select>
+        <select id="program">
+          <option value="">खेळ / कार्यक्रम</option>
+        </select>
 
-    <select id="program">
-      <option value="">खेळ / कार्यक्रम</option>
-    </select>
+        <button onclick="loadPlayers()">खेळाडू पहा</button>
 
-    <button onclick="loadPlayers()">खेळाडू पहा</button>
+        <table id="tbl" style="display: none">
+          <thead>
+            <tr>
+              <th>नाव</th>
+              <th>पदनाम</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-    <table id="tbl" style="display:none">
-      <thead>
-        <tr>
-          <th>नाव</th>
-          <th>पदनाम</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+        <button class="download" onclick="downloadExcel()">
+          Excel Download
+        </button>
+      </div>
+    </div>
 
-    <button class="download" onclick="downloadExcel()">Excel Download</button>
+    <script>
+      const API =
+        "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+      const officeSelect = document.getElementById("office");
 
-  </div>
-</div>
+      window.onload = loadOffices;
 
-<script>
-const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
-const officeSelect = document.getElementById("office");
+      async function loadOffices() {
+        const res = await fetch(`${API}?action=offices`);
+        const list = await res.json();
 
-window.onload = loadOffices;
+        list.forEach((o) => {
+          const opt = document.createElement("option");
+          opt.value = o;
+          opt.textContent = o;
+          officeSelect.appendChild(opt);
+        });
+      }
+      const mainSelect = document.getElementById("main");
+      const typeSelect = document.getElementById("type");
+      const programSelect = document.getElementById("program");
 
-async function loadOffices(){
-  const res = await fetch(`${API}?action=offices`);
-  const list = await res.json();
+      let playerData = [];
 
-  list.forEach(o=>{
-    const opt = document.createElement("option");
-    opt.value = o;
-    opt.textContent = o;
-    officeSelect.appendChild(opt);
-  });
-}
-const mainSelect    = document.getElementById("main");
-const typeSelect    = document.getElementById("type");
-const programSelect = document.getElementById("program");
+      async function loadPrograms() {
+        const main = mainSelect.value;
+        const type = typeSelect.value;
+        const office = document.getElementById("office").value;
 
-let playerData = [];
+        if (!main || !type || !office) return;
 
-async function loadPrograms(){
-  const main = mainSelect.value;
-  const type = typeSelect.value;
-  const office = document.getElementById("office").value;
+        const mainMr = main === "sports" ? "क्रीडा" : "सांस्कृतिक";
 
-  if(!main || !type || !office) return;
+        const typeMr =
+          type === "individual"
+            ? "वैयक्तिक"
+            : type === "duheri"
+              ? "दुहेरी"
+              : "सांघिक";
 
-  const mainMr =
-    main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+        const res = await fetch(
+          `${API}?action=programs` +
+            `&main=${encodeURIComponent(mainMr)}` +
+            `&type=${encodeURIComponent(typeMr)}`,
+        );
 
-  const typeMr =
-    type === "individual" ? "वैयक्तिक" :
-    type === "duheri" ? "दुहेरी" : "सांघिक";
+        const list = await res.json();
 
-  const res = await fetch(
-    `${API}?action=programs`
-    + `&main=${encodeURIComponent(mainMr)}`
-    + `&type=${encodeURIComponent(typeMr)}`
-  );
+        programSelect.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
 
-  const list = await res.json();
+        list.forEach((p) => {
+          const o = document.createElement("option");
+          o.value = p;
+          o.textContent = p;
+          programSelect.appendChild(o);
+        });
+      }
 
-  programSelect.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
+      async function loadPlayers() {
+        const office = officeSelect.value;
+        const main = mainSelect.value;
+        const type = typeSelect.value;
+        const prog = programSelect.value;
 
-  list.forEach(p=>{
-    const o = document.createElement("option");
-    o.value=p;
-    o.textContent=p;
-    programSelect.appendChild(o);
-  });
-}
+        if (!office || !main || !type || !prog) return;
 
-async function loadPlayers(){
-  const office = officeSelect.value;
-  const main = mainSelect.value;
-  const type = typeSelect.value;
-  const prog = programSelect.value;
+        const mainMr = main === "sports" ? "क्रीडा" : "सांस्कृतिक";
 
-  if(!office || !main || !type || !prog) return;
+        const typeMr =
+          type === "individual"
+            ? "वैयक्तिक"
+            : type === "duheri"
+              ? "दुहेरी"
+              : "सांघिक";
 
-  const mainMr =
-    main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+        const res = await fetch(
+          `${API}?action=playersList` +
+            `&office=${encodeURIComponent(office)}` +
+            `&main=${encodeURIComponent(mainMr)}` +
+            `&type=${encodeURIComponent(typeMr)}` +
+            `&program=${encodeURIComponent(prog)}`,
+        );
 
-  const typeMr =
-    type === "individual" ? "वैयक्तिक" :
-    type === "duheri" ? "दुहेरी" : "सांघिक";
+        playerData = await res.json();
 
-  const office = officeSelect.value;
+        const tbody = document.querySelector("#tbl tbody");
+        tbody.innerHTML = "";
 
-const office = document.getElementById("office").value;
+        playerData.forEach((p) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${p.name}</td><td>${p.designation}</td>`;
+          tbody.appendChild(tr);
+        });
 
-const res = await fetch(
-`${API}?action=playersList`
-+ `&office=${encodeURIComponent(office)}`
-+ `&main=${encodeURIComponent(mainMr)}`
-+ `&type=${encodeURIComponent(typeMr)}`
-+ `&program=${encodeURIComponent(prog)}`
-);
+        document.getElementById("tbl").style.display = "table";
+      }
 
+      function downloadExcel() {
+        if (playerData.length === 0) return;
 
-  playerData = await res.json();
+        let csv = "नाव,पदनाम\n";
+        playerData.forEach((p) => {
+          csv += `"${p.name}","${p.designation}"\n`;
+        });
 
-  const tbody = document.querySelector("#tbl tbody");
-  tbody.innerHTML="";
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
 
-  playerData.forEach(p=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${p.name}</td><td>${p.designation}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById("tbl").style.display="table";
-}
-function downloadExcel(){
-  if(playerData.length===0) return;
-
-  let csv = "नाव,पदनाम\n";
-  playerData.forEach(p=>{
-    csv += `"${p.name}","${p.designation}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "players_list.csv";
-  a.click();
-}
-</script>
-
-</body>
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "players_list.csv";
+        a.click();
+      }
+    </script>
+  </body>
 </html>
