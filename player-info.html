@@ -68,8 +68,11 @@ th{
   </div>
 
   <div class="card">
+<select id="office">
+  <option value="">मंडळ कार्यालय</option>
+</select>
 
-    <select id="main">
+   <select id="main" onchange="loadPrograms()">
       <option value="">कार्यक्रम प्रकार</option>
       <option value="sports">क्रीडा</option>
       <option value="cultural">सांस्कृतिक</option>
@@ -105,7 +108,21 @@ th{
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
+const officeSelect = document.getElementById("office");
 
+window.onload = loadOffices;
+
+async function loadOffices(){
+  const res = await fetch(`${API}?action=offices`);
+  const list = await res.json();
+
+  list.forEach(o=>{
+    const opt = document.createElement("option");
+    opt.value = o;
+    opt.textContent = o;
+    officeSelect.appendChild(opt);
+  });
+}
 const mainSelect    = document.getElementById("main");
 const typeSelect    = document.getElementById("type");
 const programSelect = document.getElementById("program");
@@ -115,9 +132,23 @@ let playerData = [];
 async function loadPrograms(){
   const main = mainSelect.value;
   const type = typeSelect.value;
-  if(!main || !type) return;
+  const office = document.getElementById("office").value;
 
-  const res = await fetch(`${API}?action=programs&main=${main}&type=${type}`);
+  if(!main || !type || !office) return;
+
+  const mainMr =
+    main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+
+  const typeMr =
+    type === "individual" ? "वैयक्तिक" :
+    type === "duheri" ? "दुहेरी" : "सांघिक";
+
+  const res = await fetch(
+    `${API}?action=programs`
+    + `&main=${encodeURIComponent(mainMr)}`
+    + `&type=${encodeURIComponent(typeMr)}`
+  );
+
   const list = await res.json();
 
   programSelect.innerHTML = '<option value="">खेळ / कार्यक्रम</option>';
@@ -131,15 +162,32 @@ async function loadPrograms(){
 }
 
 async function loadPlayers(){
+  const office = officeSelect.value;
   const main = mainSelect.value;
   const type = typeSelect.value;
   const prog = programSelect.value;
 
-  if(!main || !type || !prog) return;
+  if(!office || !main || !type || !prog) return;
 
-  const res = await fetch(
-    `${API}?action=playersList&main=${main}&type=${type}&program=${encodeURIComponent(prog)}`
-  );
+  const mainMr =
+    main === "sports" ? "क्रीडा" : "सांस्कृतिक";
+
+  const typeMr =
+    type === "individual" ? "वैयक्तिक" :
+    type === "duheri" ? "दुहेरी" : "सांघिक";
+
+  const office = officeSelect.value;
+
+const office = document.getElementById("office").value;
+
+const res = await fetch(
+`${API}?action=playersList`
++ `&office=${encodeURIComponent(office)}`
++ `&main=${encodeURIComponent(mainMr)}`
++ `&type=${encodeURIComponent(typeMr)}`
++ `&program=${encodeURIComponent(prog)}`
+);
+
 
   playerData = await res.json();
 
@@ -154,7 +202,6 @@ async function loadPlayers(){
 
   document.getElementById("tbl").style.display="table";
 }
-
 function downloadExcel(){
   if(playerData.length===0) return;
 
