@@ -109,20 +109,26 @@ if(sessionStorage.getItem("coordAuth") !== "1"){
 
 const API_URL = "https://script.google.com/macros/s/AKfycby4jBFfFt6GSBlQj_Cs22HrFA-0oXMZNQd0tBHA7h_FHYR2FLqR4UFaiCAfruYJQd9-NA/exec";
 
+// ✅ DOM references (IMPORTANT)
+const officeEl = document.getElementById("office");
+const typeEl   = document.getElementById("type");
+const eventEl  = document.getElementById("event");
+const nameEl   = document.getElementById("name");
+const postEl   = document.getElementById("post");
+const mobileEl = document.getElementById("mobile");
+
 // ✅ offices load
 async function loadOffices(){
   const res = await fetch(API_URL + "?action=offices");
   const offices = await res.json();
 
-  const sel = document.getElementById("office");
   offices.forEach(o=>{
     const op = document.createElement("option");
     op.value = o;
     op.textContent = o;
-    sel.appendChild(op);
+    officeEl.appendChild(op);
   });
 }
-
 loadOffices();
 
 // table render helper
@@ -143,12 +149,12 @@ async function addEntry(){
 
   const entry = {
     action: "addCoordinator",
-    office: office.value.trim(),
-    type: type.value.trim(),
-    event: event.value.trim(),
-    name: name.value.trim(),
-    post: post.value.trim(),
-    mobile: mobile.value.trim()
+    office: officeEl.value.trim(),
+    type: typeEl.value.trim(),
+    event: eventEl.value.trim(),
+    name: nameEl.value.trim(),
+    post: postEl.value.trim(),
+    mobile: mobileEl.value.trim()
   };
 
   if(!entry.office || !entry.type || !entry.event || !entry.name){
@@ -159,9 +165,7 @@ async function addEntry(){
   try{
     const res = await fetch(API_URL,{
       method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
+      headers:{"Content-Type":"application/json"},
       body: JSON.stringify(entry)
     });
 
@@ -171,14 +175,14 @@ async function addEntry(){
       alert("नोंद यशस्वी झाली ✅");
       addRow(entry);
 
-      office.value="";
-      type.value="";
-      event.value="";
-      name.value="";
-      post.value="";
-      mobile.value="";
+      officeEl.value="";
+      typeEl.value="";
+      eventEl.value="";
+      nameEl.value="";
+      postEl.value="";
+      mobileEl.value="";
     }else{
-      alert("Server error");
+      alert(d.message || "Server error");
     }
 
   }catch(e){
